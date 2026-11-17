@@ -2,14 +2,15 @@
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![Tests Passing](https://img.shields.io/badge/tests-19%20passed-brightgreen.svg)]()
+[![Streamlit App](https://img.shields.io/badge/Streamlit-Interactive%20Dashboard-red.svg)](https://streamlit.io/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)]()
-[![Status: Phase 1 & 2 Completed](https://img.shields.io/badge/Phase%201%20%26%202-Complete-success.svg)]()
+[![Status: Submission Ready](https://img.shields.io/badge/Internship%20Submission-Phase%201%2C%202%20%26%203%20Complete-success.svg)]()
 
-> **Project Developed for:** Data Science with Python Analyst Internship  
+> **Project Developed for:** Data Science with Python Analyst Internship (Yuvaintern)  
 > **Author & Role:** Senior Data Scientist, Python Data Engineer & Data Analytics Architect  
 > **Enterprise Analyzed:** *Aura Luxe Salon & Spa Chain*  
 > **Location:** Coimbatore, Tamil Nadu, India (22 Outlets across 5 Geographic Regions)  
-> **Data Scope:** ~300,000 Appointment Records (2022–2024), 18,000 A/B Trial Units, 48-Month Regional Panel
+> **Scope:** ~300,000 Appointment Records (2022–2024), 18,000 A/B Trial Units, 48-Month Regional Panel
 
 ---
 
@@ -17,31 +18,36 @@
 
 > [!IMPORTANT]
 > **SIMULATION DISCLOSURE:**  
-> All data files, customer demographics, booking logs, employee profiles, revenues, and experimental assignments included in this repository are **100% synthetically generated** using Python simulation scripts (Seed: 42). The enterprise entity, outlet performance, and experimental results are modeled for academic, analytical, and portfolio demonstration purposes and must **not** be represented as actual proprietary corporate records of any existing salon or spa business.
+> All data files, customer demographics, booking logs, employee profiles, revenues, and experimental assignments included in this repository are **100% synthetically generated** using Python simulation scripts (Seed: `42`). The enterprise entity, outlet performance, and experimental results are modeled for academic, analytical, and portfolio demonstration purposes and must **not** be represented as actual proprietary corporate records of any existing salon or spa business.
 
 ---
 
-## 🏢 Business Context & Problem Framing
+## 🏢 Business Context & Problem Statement
 
-*Aura Luxe Salon & Spa Chain* operates **22 retail outlets** strategically distributed across Coimbatore, Tamil Nadu. The network encompasses flagship luxury salons in high-income neighborhoods (Race Course, RS Puram), high-throughput salons in student and IT corridors (Peelamedu, Saravanampatti), and family-oriented salons in residential suburbs (Vadavalli, Saibaba Colony).
+*Aura Luxe Salon & Spa Chain* operates **22 retail outlets** strategically distributed across Coimbatore, Tamil Nadu. The network encompasses flagship luxury salons in high-income neighborhoods (*Race Course, RS Puram*), high-throughput salons in student and IT corridors (*Peelamedu, Saravanampatti*), and family-oriented salons in residential suburbs (*Vadavalli, Saibaba Colony*).
 
-Management piloted two major strategic interventions:
-1. **Prospective Randomized A/B Experiment:** An **"Automated WhatsApp Appointment Confirmation & Smart Rescheduling System"** tested against standard 24h SMS reminders across 18,000 active clients (stratified across the 22 outlets).
-2. **Quasi-Experimental Regional Policy:** A **"Centralized Regional Quality & Automated Service Guarantee Policy"** rolled out across Central and North Coimbatore regions for Difference-in-Differences (DiD) econometric evaluation.
+Prior to business interventions, exploratory analysis revealed two severe operational vulnerabilities:
+1. **Unnotified Appointment No-Shows (~12.1%):** Customers failing to appear for booked slots resulted in over 420 hours of unrecoverable stylist chair vacancy each week across the chain.
+2. **Customer Retention Plateau (~58.2%):** Over 41% of active clients failed to return for a completed appointment within a standard 60-day observation window, dampening customer lifetime value (LTV).
+
+To address these challenges, the chain executed two strategic initiatives:
+- **Prospective Randomized A/B Experiment:** Deploying an **Automated WhatsApp Appointment Confirmation & Smart Rescheduling System** tested against standard 24-hour SMS reminders across 18,000 active clients.
+- **Quasi-Experimental Regional Overhaul:** Launching a **Centralized Regional Quality & Automated Service Guarantee Policy** in Central and North Coimbatore regions, evaluated via Difference-in-Differences (DiD).
 
 ---
 
 ## 🛠️ Technology Stack
 
-- **Core Analytics & Data Engineering:** Python 3.10+, Pandas, NumPy
-- **Statistical Inference & Causal Econometrics:** Statsmodels, SciPy, Scikit-learn
+- **Core Analytics & Engineering:** Python 3.10+, Pandas, NumPy
+- **Statistical Inference & Econometrics:** Statsmodels, SciPy, Scikit-learn
 - **Data Visualization & Plotting:** Matplotlib, Seaborn
-- **Interactive Exploration:** Jupyter Notebook
-- **Automated Verification:** Pytest
+- **Interactive UI Dashboard:** Streamlit
+- **Technical Documentation & Reporting:** Python-docx (Word `.docx`)
+- **Testing & Verification:** Pytest
 
 ---
 
-## 📂 Project Repository Structure
+## 📂 Project Architecture
 
 ```
 Salon-Experiment-Causal-Analysis/
@@ -81,11 +87,15 @@ Salon-Experiment-Causal-Analysis/
 │   ├── feature_engineering.py            # Sequential, customer-level, and outlet features
 │   ├── statistical_inference.py          # Power analysis, SRM check, z-test, t-test, Bootstrap CI
 │   ├── causal_inference.py               # DiD regression, Event-Study, CUPED, Subgroup estimation
-│   └── visualization.py                  # Complete visualization suite (15 figures, 300 DPI)
+│   ├── visualization.py                  # Complete visualization suite (15 figures, 300 DPI)
+│   ├── generate_phase2_tables.py         # Summary results tables export script
+│   └── generate_docx_reports.py          # Professional DOCX report generator
 │
 ├── reports/
-│   ├── data_quality_report.md            # Phase 1: Data engineering & quality audit report
-│   └── statistical_experimentation_report.md # Phase 2: Statistical inference & causal report
+│   ├── experiment_design.docx            # Mandatory Deliverable 1: 15-Section Experiment Protocol
+│   ├── decision_memo.docx                # Mandatory Deliverable 3: 1-Page A4 Executive Decision Memo
+│   ├── data_quality_report.md            # Supporting: Data engineering & quality audit report
+│   └── statistical_experimentation_report.md # Supporting: Statistical & causal technical report
 │
 ├── outputs/
 │   ├── figures/                          # 15 Publication-grade figures (300 DPI)
@@ -112,9 +122,10 @@ Salon-Experiment-Causal-Analysis/
 │       └── cuped_variance_reduction_summary.csv
 │
 ├── tests/
-│   ├── test_pipeline.py                  # Phase 1: Data engineering & pipeline tests (9 tests)
-│   └── test_statistical_inference.py    # Phase 2: Statistical, DiD & CUPED tests (10 tests)
+│   ├── test_pipeline.py                  # Data engineering & pipeline tests (9 tests)
+│   └── test_statistical_inference.py    # Statistical, DiD & CUPED tests (10 tests)
 │
+├── app.py                                # Interactive Multi-Page Streamlit Dashboard
 ├── requirements.txt                      # Project package dependencies
 ├── README.md                             # Project overview and reproduction guide
 └── .gitignore                            # Git exclusion rules
@@ -122,53 +133,104 @@ Salon-Experiment-Causal-Analysis/
 
 ---
 
-## ⚡ Step-by-Step Reproduction Guide
+## 🔬 Core Methodologies & Statistical Frameworks
+
+### 1. Randomized A/B Experimentation
+- **Intervention:** Automated WhatsApp Bot providing 48h/24h 1-click confirmation and slot-swap rescheduling.
+- **Randomization:** Customer-level, stratified across 22 outlets (9,000 Treatment vs. 9,000 Control).
+- **Power Sizing:** Statsmodels `NormalIndPower` with Cohen's $h$. Required $n = 4,218$ per arm for 3.0 pp MDE at 80% power; actual $N = 18,000$ achieves $> 98\%$ power.
+- **Sample Ratio Mismatch (SRM):** Evaluated via Pearson's $\chi^2$ goodness-of-fit ($\chi^2 = 0.000, p = 1.000$), ruling out traffic skew.
+- **Baseline Balance:** Evaluated across Age, Pre-trial visits, Spend, and Prior no-shows using Standardized Mean Differences (all SMDs $< 0.015$).
+
+### 2. Difference-in-Differences (DiD) Econometric Modeling
+- **Model:** $Y_{rt} = \beta_0 + \beta_1(\text{Treatment}_r) + \beta_2(\text{Post}_t) + \beta_3(\text{Treatment}_r \times \text{Post}_t) + \epsilon_{rt}$.
+- **Clusters:** Clustered standard errors at regional level ($G = 5$).
+- **Parallel Trends Validation:** Evaluated pre-intervention leads ($t = -24$ to $t = -2$) via dynamic event-study regression with omitted reference month $t = -1$ (2022-12). Over 95% of pre-treatment leads were statistically indistinguishable from zero ($p \ge 0.05$).
+
+### 3. CUPED Variance Reduction
+- **Formulation:** $Y_{i,\text{adj}} = Y_i - \theta (X_i - \bar{X})$, where $\theta = \frac{\widehat{\text{Cov}}(Y,X)}{\widehat{\text{Var}}(X)}$.
+- **Covariate:** Pre-experiment spend ($X$) measured strictly before treatment kickoff (`2024-07-01`).
+- **Precision Lift:** Achieved **13.17% variance reduction** in conditional spend, shrinking standard errors by **6.81%** and yielding an equivalent **13.17% trial runtime savings** without point-estimate bias.
+
+---
+
+## 📈 Key Empirical Findings Summary
+
+| Metric Dimension | Control Group | Treatment Group | Estimated Treatment Effect | Relative Lift (%) | 95% Confidence Interval | $p$-value | Statistical & Business Conclusion |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **60-Day Retention (Primary)** | 57.84% | 63.79% | **+5.94 pp** | **+10.28%** | $[+4.52\text{ pp}, +7.37\text{ pp}]$ | $2.14 \times 10^{-16}$ | **Significant.** Boosts repeat visits by ~535 clients per 9,000 active base. |
+| **No-Show Rate (Secondary)** | 13.11% | 8.41% | **-4.70 pp** | **-35.86%** | $[-5.63\text{ pp}, -3.77\text{ pp}]$ | $2.68 \times 10^{-23}$ | **Significant.** Drastic cut in vacant chair time; recaptures ~423 stylist hours. |
+| **Revenue / Visit (Secondary)** | ₹1,247.50 | ₹1,355.00 | **+₹107.50** | **+8.62%** | $[+₹79.80, +₹135.20]$ | $4.31 \times 10^{-14}$ | **Significant.** Driven by lower abandonment and retail reminder links. |
+| **DiD Regional Revenue Lift** | ₹1,278.30 | ₹1,646.20 | **+₹175.16** | **+13.70%** | $[+₹162.40, +₹187.92]$ | $< 0.0001$ | **Significant.** Regional quality policy sustained long-term revenue gains. |
+| **DiD Retention Lift** | 56.10% | 65.80% | **+4.61 pp** | **+8.22%** | $[+4.06\text{ pp}, +5.16\text{ pp}]$ | $< 0.0001$ | **Significant.** Verified parallel trends across pre-intervention panel. |
+
+---
+
+## 🖼️ Visualizations & Screenshots Preview
+
+The analytical pipeline generates 15 publication-grade figures (300 DPI) in `outputs/figures/`:
+
+| Figure Preview | Description |
+| :--- | :--- |
+| **01. Status Distribution** | Appointment breakdown: Completed (80.5%), Cancelled (7.4%), No-Show (12.1%). |
+| **02. Outlet Performance** | Revenue and appointment volume rankings across all 22 Coimbatore outlets. |
+| **06. Monthly Revenue Trends** | Time series capturing Tamil Nadu festive peaks (Diwali, Pongal) and monsoon dips. |
+| **10. Treatment vs Control** | 3-Panel comparison across Retention (+5.94 pp), Revenue (+₹107.5), and No-Shows (-4.7 pp). |
+| **11. Forest Plot** | Point estimates and 95% Confidence Intervals for experimental metrics. |
+| **12. DiD Parallel Trends** | 48-Month trajectory confirming shared pre-intervention dynamics across regions. |
+| **13. DiD Event Study** | Dynamic leads and lags demonstrating zero pre-divergence and sustained post-lift. |
+| **15. CUPED Variance Shrinkage**| Distribution KDE variance reduction (-13.2%) and confidence interval tightening. |
+
+---
+
+## 💻 Installation & Step-by-Step Execution Guide
 
 ### 1. Environment Setup
 Clone the repository and install the verified dependencies:
 ```bash
+git clone https://github.com/<your-username>/Salon-Experiment-Causal-Analysis.git
+cd Salon-Experiment-Causal-Analysis
 pip install -r requirements.txt
 ```
 
-### 2. Generate Synthetic Datasets
-Generate all 8 raw synthetic datasets (~300,000 appointments, 42,000 customers, 22 outlets, 119 stylists):
+### 2. Run Data Engineering & Cleaning Pipelines
 ```bash
+# Generate 8 raw synthetic datasets (Seed: 42)
 python src/data_generation.py
-```
 
-### 3. Execute Data Cleaning Pipeline
-Run the data quality and cleaning suite to de-duplicate, impute missing values, standardize messy service names, recover misclassified no-shows, and rectify revenue anomalies:
-```bash
+# Clean datasets & de-duplicate records
 python src/data_cleaning.py
-```
 
-### 4. Execute Feature Engineering Pipeline
-Engineer appointment-level sequential metrics, customer lifetime behavioral profiles, 60-day/90-day retention windows, and outlet performance metrics:
-```bash
+# Engineer sequential, customer-level & outlet metrics
 python src/feature_engineering.py
 ```
 
-### 5. Generate Phase 2 Analytical Tables
-Compute and export consolidated experiment results, DiD regression summaries, and CUPED variance reduction statistics:
+### 3. Generate Analytical Tables & Visualizations
 ```bash
+# Generate Phase 2 summary tables
 python src/generate_phase2_tables.py
-```
 
-### 6. Generate Complete Visualizations
-Generate all 15 publication-grade analytical plots (300 DPI):
-```bash
+# Generate all 15 publication-grade charts (300 DPI)
 python src/visualization.py
+
+# Generate Word (.docx) deliverables (Experiment Design & Decision Memo)
+python src/generate_docx_reports.py
 ```
 
-### 7. Run Automated Test Suite
-Execute the comprehensive 19-test automated test suite:
+### 4. Execute Automated Verification Test Suite
+Run the 19 automated tests validating data integrity, statistical formulas, DiD regression, and CUPED variance reduction:
 ```bash
 python -m pytest tests/ -v
 ```
 *(Expected: 19 passed in < 4.0s)*
 
-### 8. Run Jupyter Notebooks
-Launch and inspect the analytical notebooks:
+### 5. Launch Interactive Streamlit Dashboard
+```bash
+streamlit run app.py
+```
+*The interactive dashboard will launch at `http://localhost:8501`.*
+
+### 6. Inspect Jupyter Analysis Notebooks
 ```bash
 jupyter notebook notebooks/01_data_exploration.ipynb
 jupyter notebook notebooks/02_ab_test_analysis.ipynb
@@ -179,18 +241,44 @@ jupyter notebook notebooks/05_cuped_analysis.ipynb
 
 ---
 
-## 📊 Summary of Phase 2 Analytical Deliverables
+## 🚀 Interactive Streamlit Dashboard (`app.py`)
 
-| Deliverable Area | Method / Tool | Core Finding / Metric Value |
-| :--- | :--- | :--- |
-| **Statistical Power** | Statsmodels `NormalIndPower` | $N = 4,218$ per arm required for 3.0 pp MDE; actual $N = 9,000$ achieves $>98\%$ power. |
-| **Sample Ratio Mismatch** | $\chi^2$ Goodness-of-Fit | Observed 9,000 vs 9,000 ($\chi^2 = 0.000$, $p = 1.000$), confirming zero allocation bias. |
-| **Baseline Balance** | Cohen's $d$ (SMD), Welch's $t$, $\chi^2$ | All continuous SMDs $< 0.015$ and categorical $V < 0.01$, confirming balance. |
-| **Primary Metric (Retention)** | Two-Proportion Z-Test & Bootstrap | Control: 57.84%, Treatment: 63.79%, **Lift: +5.94 pp (+10.28% relative)**, $p < 0.001$, 95% CI: $[+4.52\text{ pp}, +7.37\text{ pp}]$. |
-| **Secondary Metric (No-Show)** | Two-Proportion Z-Test & Bootstrap | Control: 13.11%, Treatment: 8.41%, **Reduction: -4.70 pp (-35.86% relative)**, $p < 0.001$, 95% CI: $[-5.63\text{ pp}, -3.77\text{ pp}]$. |
-| **Secondary Metric (Revenue)** | Welch's $t$-Test & Bootstrap | Control: ₹1,247.50, Treatment: ₹1,355.00, **Lift: +₹107.50 (+8.62%)**, $p < 0.001$, 95% CI: $[+₹79.80, +₹135.20]$. |
-| **Difference-in-Differences** | Two-Way OLS with Cluster-Robust SE | Regional policy drove **+₹175.16 revenue lift**, **+4.61 pp retention lift**, and **-3.21 pp no-show drop** ($p < 0.001$). |
-| **Parallel Trends** | Event-Study Dynamic DiD | Pre-intervention dynamic leads showed no pre-trend divergence ($p \ge 0.05$). |
-| **Customer Segmentation** | Subgroup Treatment Effects | Highest retention lift in Regular/Budget clients (+6.5 pp to +7.1 pp); lowest no-shows in student hubs. |
-| **Variance Reduction** | CUPED ($\theta = 0.0712$, $\rho = 0.363$) | **13.17% variance reduction** in conditional spend; **13.17% equivalent sample size / duration savings**. |
-| **Verification & Tests** | Pytest Verification Suite | **19 of 19 tests passed** across data engineering, stats, DiD, and CUPED. |
+The project includes an optional interactive analytical web application with 5 dynamic pages:
+- **Page 1: Business Overview:** High-level KPI cards, revenue in ₹ Crores, regional filters, and monthly revenue trends.
+- **Page 2: A/B Experiment Analysis:** Control vs. Treatment comparisons, SRM diagnostic badge, and forest plots.
+- **Page 3: Historical Causal Analysis:** DiD regression outcomes, parallel trends inspection, and event-study dynamics.
+- **Page 4: Customer Segmentation:** Interactive subgroup exploration across Customer Personas, Outlet Tiers, and Regions.
+- **Page 5: CUPED Variance Reduction:** Variance reduction statistics, distribution KDE plots, and an interactive runtime savings calculator.
+
+---
+
+## ⚠️ Limitations & Future Improvements
+
+1. **Synthetic Nature:** All records are simulated via parametric distributions (Gamma, Pareto, Negative Binomial) calibrated to Coimbatore demographics. Real-world consumer behaviors may feature unforeseen micro-shocks.
+2. **Anonymous Walk-In Barrier:** Walk-ins without registered mobile numbers cannot receive digital WhatsApp messages. In-salon front-counter conversion protocols are required to onboard these guests.
+3. **Small Regional Cluster Count:** Regional DiD clustered standard errors are based on $G = 5$ administrative regions. While robust, asymptotic cluster assumptions should be monitored alongside outlet-level microdata.
+4. **Future Extensions:** Implement synthetic control methods (SCM) for regional policy evaluation and deploy multi-armed bandit (MAB) algorithms to dynamically optimize message delivery timing.
+
+---
+
+## 📤 GitHub Push Instructions
+
+To push this submission package to your personal GitHub repository:
+
+```bash
+# 1. Initialize Git repository
+git init
+
+# 2. Add files (honoring .gitignore)
+git add .
+
+# 3. Commit deliverables
+git commit -m "feat: complete Phase 1, 2, and 3 submission package for Salon Experiment & Causal Analysis"
+
+# 4. Link to GitHub remote
+git remote add origin https://github.com/<your-username>/Salon-Experiment-Causal-Analysis.git
+
+# 5. Push to main branch
+git branch -M main
+git push -u origin main
+```
