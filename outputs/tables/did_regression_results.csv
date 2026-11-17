@@ -1,0 +1,4 @@
+Outcome,Counterfactual Control Baseline,DiD Effect (beta3),Cluster-Robust SE,95% Confidence Interval,p-value,Statistical Conclusion,Practical Economic Impact
+Revenue per Visit (INR),Rs. 1409.87,Rs. +175.16,Rs. 6.81,"[Rs. +161.80, Rs. +188.52]",1.0810e-145,Statistically Significant (p < 0.001),Policy intervention drove ~Rs. 175.2 average revenue gain per visit across Central & North regions.
+Customer Retention Rate,56.19%,+4.61 pp,0.21 pp,"[+4.21 pp, +5.02 pp]",4.4189e-111,Statistically Significant (p < 0.001),Sustained +4.6 pp lift in 60-day customer retention in policy-treated regions.
+No-Show Rate,11.85%,-3.36 pp,0.08 pp,"[-3.52 pp, -3.19 pp]",0.0000e+00,Statistically Significant (p < 0.001),"No-show rate declined by 3.2 pp, reducing slot vacancy in treated hubs."

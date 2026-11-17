@@ -391,8 +391,267 @@ def plot_experiment_baseline_balance(df_experiment: pd.DataFrame) -> str:
     return out_path
 
 
+# =====================================================================
+# PHASE 2: EXPERIMENTATION & CAUSAL INFERENCE VISUALIZATIONS
+# =====================================================================
+
+def plot_power_sensitivity(df_sensitivity: pd.DataFrame) -> str:
+    """Plots power curves and sample size sensitivity across MDEs and power levels."""
+    fig, ax = plt.subplots(figsize=(10, 6))
+
+    for pwr, grp in df_sensitivity.groupby("power"):
+        ax.plot(grp["mde_absolute"] * 100, grp["n_per_group"], marker="o", linewidth=2.5,
+                label=f"Power = {int(pwr*100)}% (beta = {1-pwr:.2f})")
+
+    ax.axhline(9000, color="crimson", linestyle="--", linewidth=1.8, label="Enrolled Sample Size per Group (N = 9,000)")
+    ax.set_title("Statistical Power Analysis: Required Sample Size vs. Minimum Detectable Effect (MDE)")
+    ax.set_xlabel("Minimum Detectable Effect (MDE in Percentage Points)")
+    ax.set_ylabel("Required Sample Size per Group (n)")
+    ax.set_yscale("log")
+    ax.grid(True, which="both", linestyle="--", alpha=0.6)
+    ax.legend(frameon=True, facecolor="white", framealpha=0.9)
+
+    plt.tight_layout()
+    out_path = os.path.join(FIGURES_DIR, "09_power_analysis_sensitivity.png")
+    plt.savefig(out_path, dpi=300, bbox_inches="tight")
+    plt.close()
+    return out_path
+
+
+def plot_ab_test_treatment_vs_control(df_experiment: pd.DataFrame) -> str:
+    """Plots comprehensive 3-panel comparison of Primary (Retention) and Secondary metrics."""
+    fig, axes = plt.subplots(1, 3, figsize=(16, 5))
+
+    palette = {"Control": "#4a7c59", "Treatment": "#2b5c8f"}
+
+    # 1. Retention Rate (Primary)
+    ret_summary = (df_experiment.groupby("treatment_assignment")["retention_outcome"].mean() * 100).round(2)
+    bars1 = axes[0].bar(ret_summary.index, ret_summary.values, color=["#4a7c59", "#2b5c8f"], edgecolor="black", width=0.45)
+    axes[0].set_title("Primary Metric: 60-Day Retention Rate (%)")
+    axes[0].set_ylabel("Retention Rate (%)")
+    axes[0].set_ylim(0, 80)
+    for bar in bars1:
+        h = bar.get_height()
+        axes[0].annotate(f"{h:.1f}%", xy=(bar.get_x() + bar.get_width()/2, h), xytext=(0, 4),
+                         textcoords="offset points", ha="center", weight="bold", fontsize=11)
+
+    # 2. Revenue per Visit (Secondary)
+    rev_summary = df_experiment.groupby("treatment_assignment")["revenue_per_visit"].mean().round(2)
+    bars2 = axes[1].bar(rev_summary.index, rev_summary.values, color=["#4a7c59", "#2b5c8f"], edgecolor="black", width=0.45)
+    axes[1].set_title("Secondary Metric: Revenue per Visit (₹)")
+    axes[1].set_ylabel("Mean Spend (₹)")
+    axes[1].set_ylim(0, max(rev_summary.values) * 1.25)
+    for bar in bars2:
+        h = bar.get_height()
+        axes[1].annotate(f"₹{h:.1f}", xy=(bar.get_x() + bar.get_width()/2, h), xytext=(0, 4),
+                         textcoords="offset points", ha="center", weight="bold", fontsize=11)
+
+    # 3. No-Show Rate (Secondary)
+    noshow_summary = (df_experiment.groupby("treatment_assignment")["no_show_outcome"].mean() * 100).round(2)
+    bars3 = axes[2].bar(noshow_summary.index, noshow_summary.values, color=["#4a7c59", "#2b5c8f"], edgecolor="black", width=0.45)
+    axes[2].set_title("Secondary Metric: Post-Trial No-Show Rate (%)")
+    axes[2].set_ylabel("No-Show Rate (%)")
+    axes[2].set_ylim(0, 20)
+    for bar in bars3:
+        h = bar.get_height()
+        axes[2].annotate(f"{h:.1f}%", xy=(bar.get_x() + bar.get_width()/2, h), xytext=(0, 4),
+                         textcoords="offset points", ha="center", weight="bold", fontsize=11)
+
+    plt.suptitle("A/B Experiment Empirical Results: Automated WhatsApp Intervention vs Standard SMS", y=1.02)
+    plt.tight_layout()
+    out_path = os.path.join(FIGURES_DIR, "10_ab_test_treatment_vs_control.png")
+    plt.savefig(out_path, dpi=300, bbox_inches="tight")
+    plt.close()
+    return out_path
+
+
+def plot_treatment_effects_forest(results_list: List[Dict]) -> str:
+    """Forest plot illustrating point estimates and 95% Confidence Intervals for all experimental metrics."""
+    fig, ax = plt.subplots(figsize=(10, 5))
+
+    y_pos = np.arange(len(results_list))
+    metrics = [r["metric"] for r in results_list]
+    effects = [r["absolute_effect"] for r in results_list]
+    ci_lows = [r["ci_lower_95"] for r in results_list]
+    ci_highs = [r["ci_upper_95"] for r in results_list]
+
+    errors = [
+        [eff - low for eff, low in zip(effects, ci_lows)],
+        [high - eff for eff, high in zip(effects, ci_highs)]
+    ]
+
+    ax.errorbar(effects, y_pos, xerr=errors, fmt="o", color="#1f77b4", ecolor="#1f77b4",
+                elinewidth=2.5, capsize=6, markersize=8, markeredgecolor="black")
+    ax.axvline(0, color="gray", linestyle="--", linewidth=1.5, alpha=0.8)
+
+    ax.set_yticks(y_pos)
+    ax.set_yticklabels(metrics, fontsize=11, weight="bold")
+    ax.invert_yaxis()
+    ax.set_title("Estimated Treatment Effects with 95% Confidence Intervals (Forest Plot)")
+    ax.set_xlabel("Absolute Treatment Effect (Point Estimate & 95% CI)")
+    ax.grid(axis="x", linestyle="--", alpha=0.7)
+
+    for i, r in enumerate(results_list):
+        eff = r["absolute_effect"]
+        low, high = r["ci_lower_95"], r["ci_upper_95"]
+        ax.annotate(f"{eff:+.3f} [{low:+.3f}, {high:+.3f}] (p={r['p_value']:.4f})",
+                    xy=(high, i), xytext=(8, -3), textcoords="offset points",
+                    fontsize=9, weight="semibold", color="#084081")
+
+    plt.tight_layout()
+    out_path = os.path.join(FIGURES_DIR, "11_ab_test_confidence_intervals_forest.png")
+    plt.savefig(out_path, dpi=300, bbox_inches="tight")
+    plt.close()
+    return out_path
+
+
+def plot_did_parallel_trends(df_historical: pd.DataFrame) -> str:
+    """Plots pre- and post-intervention trajectory for Difference-in-Differences across regions."""
+    fig, axes = plt.subplots(3, 1, figsize=(15, 14), sharex=True)
+
+    metrics = [
+        ("revenue_per_visit", "Revenue per Visit (₹)", "Revenue per Completed Visit Trajectory (DiD)"),
+        ("customer_retention", "60-Day Customer Retention Rate", "Customer Repeat Retention Trajectory (DiD)"),
+        ("no_show_rate", "No-Show Rate", "Appointment No-Show Rate Trajectory (DiD)")
+    ]
+
+    intervention_month = "2023-01"
+
+    for idx, (col, ylabel, title) in enumerate(metrics):
+        ax = axes[idx]
+        treat_series = df_historical[df_historical["treatment_region_indicator"] == 1].groupby("month")[col].mean()
+        ctrl_series = df_historical[df_historical["treatment_region_indicator"] == 0].groupby("month")[col].mean()
+
+        months = treat_series.index.tolist()
+        ax.plot(months, treat_series.values, marker="o", color="#2b5c8f", linewidth=2.2, label="Treatment Regions (Central & North)")
+        ax.plot(months, ctrl_series.values, marker="s", color="#7570b3", linewidth=2.2, linestyle="--", label="Control Regions (East, South, West)")
+
+        # Intervention line
+        ax.axvline(intervention_month, color="crimson", linestyle="-.", linewidth=2, label="Intervention Start (2023-01)")
+        ax.set_title(title)
+        ax.set_ylabel(ylabel)
+        ax.grid(True, linestyle="--", alpha=0.6)
+        if idx == 0:
+            ax.legend(loc="upper left", frameon=True, facecolor="white")
+
+    axes[2].set_xlabel("Year-Month")
+    axes[2].tick_params(axis="x", rotation=45)
+
+    plt.suptitle("Difference-in-Differences: Visualizing Parallel Trends & Post-Intervention Divergence", y=1.01)
+    plt.tight_layout()
+    out_path = os.path.join(FIGURES_DIR, "12_did_parallel_trends_inspection.png")
+    plt.savefig(out_path, dpi=300, bbox_inches="tight")
+    plt.close()
+    return out_path
+
+
+def plot_did_event_study(df_event_study: pd.DataFrame, outcome_name: str = "Revenue per Visit") -> str:
+    """Plots dynamic event-study regression leads and lags with 95% confidence intervals."""
+    fig, ax = plt.subplots(figsize=(14, 6))
+
+    ax.errorbar(df_event_study["rel_time"], df_event_study["coefficient"],
+                yerr=[df_event_study["coefficient"] - df_event_study["ci_lower_95"],
+                      df_event_study["ci_upper_95"] - df_event_study["coefficient"]],
+                fmt="o", color="#08519c", ecolor="#08519c", elinewidth=1.8, capsize=4,
+                markersize=6, label="Dynamic Treatment Effect (gamma_t)")
+
+    ax.axhline(0, color="black", linestyle="-", linewidth=1.2)
+    ax.axvline(-0.5, color="red", linestyle="--", linewidth=1.8, label="Intervention Threshold (t = 0)")
+
+    # Highlight reference period
+    ax.scatter([-1], [0], color="red", s=80, zorder=5, label="Reference Month (t = -1, 2022-12)")
+
+    ax.set_title(f"Event-Study Dynamic DiD Coefficients: {outcome_name}")
+    ax.set_xlabel("Months Relative to Intervention (t = 0 is 2023-01)")
+    ax.set_ylabel(f"Estimated Impact on {outcome_name}")
+    ax.grid(True, linestyle="--", alpha=0.6)
+    ax.legend(frameon=True, facecolor="white")
+
+    plt.tight_layout()
+    out_path = os.path.join(FIGURES_DIR, "13_did_event_study_dynamics.png")
+    plt.savefig(out_path, dpi=300, bbox_inches="tight")
+    plt.close()
+    return out_path
+
+
+def plot_segmentation_heterogeneity(df_subgroups: pd.DataFrame) -> str:
+    """Plots heterogeneous treatment effects across customer personas, outlet tiers, and service categories."""
+    fig, ax = plt.subplots(figsize=(12, 7))
+
+    df_plot = df_subgroups.sort_values(by="treatment_effect", ascending=True).reset_index(drop=True)
+    y_pos = np.arange(len(df_plot))
+
+    effects = df_plot["treatment_effect"]
+    ci_lows = df_plot["ci_lower_95"]
+    ci_highs = df_plot["ci_upper_95"]
+    labels = df_plot["subgroup_dimension"] + ": " + df_plot["subgroup_value"]
+
+    errors = [effects - ci_lows, ci_highs - effects]
+
+    ax.errorbar(effects, y_pos, xerr=errors, fmt="s", color="#238b45", ecolor="#238b45",
+                elinewidth=2.2, capsize=5, markersize=7)
+    ax.axvline(0, color="black", linestyle="--", linewidth=1.5)
+
+    ax.set_yticks(y_pos)
+    ax.set_yticklabels(labels, fontsize=10)
+    ax.set_title("Heterogeneous Treatment Effect Analysis Across Dimensions (60-Day Retention Lift)")
+    ax.set_xlabel("Treatment Effect (Difference in Retention Rate & 95% CI)")
+    ax.grid(axis="x", linestyle="--", alpha=0.7)
+
+    for i, row in df_plot.iterrows():
+        ax.annotate(f"{row['treatment_effect']:+.3f} (N={row['control_n']+row['treatment_n']:,})",
+                    xy=(row["ci_upper_95"], i), xytext=(6, -3), textcoords="offset points",
+                    fontsize=8.5, weight="semibold", color="#005a32")
+
+    plt.tight_layout()
+    out_path = os.path.join(FIGURES_DIR, "14_segmentation_treatment_effects.png")
+    plt.savefig(out_path, dpi=300, bbox_inches="tight")
+    plt.close()
+    return out_path
+
+
+def plot_cuped_comparison(cuped_results: Dict) -> str:
+    """Plots variance reduction comparison and treatment effect precision between Raw and CUPED."""
+    fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+    df_adj = cuped_results["adjusted_dataframe"]
+
+    # 1. Distribution Variance Shrinkage KDE
+    sns.kdeplot(df_adj["revenue_per_visit"], label=f"Original Y (Var: {cuped_results['variance_raw']:.1f})",
+                color="#e41a1c", linewidth=2.2, ax=axes[0])
+    sns.kdeplot(df_adj["y_adjusted"], label=f"CUPED Y_adj (Var: {cuped_results['variance_cuped']:.1f}, -{cuped_results['actual_variance_reduction_pct']:.1f}%)",
+                color="#377eb8", linewidth=2.2, linestyle="--", ax=axes[0])
+    axes[0].set_title("Outcome Distribution: Variance Reduction via CUPED")
+    axes[0].set_xlabel("Metric Value")
+    axes[0].set_ylabel("Density")
+    axes[0].legend(frameon=True, facecolor="white")
+
+    # 2. Precision / CI Shrinkage Comparison
+    methods = ["Standard (Raw OLS)", "CUPED Adjusted"]
+    effects = [cuped_results["raw_treatment_effect"], cuped_results["cuped_treatment_effect"]]
+    ses = [cuped_results["raw_se"], cuped_results["cuped_se"]]
+    ci_err = [[1.96 * s for s in ses], [1.96 * s for s in ses]]
+
+    axes[1].errorbar(methods, effects, yerr=ci_err, fmt="o", color="#2ca02c", ecolor="#2ca02c",
+                     elinewidth=2.5, capsize=8, markersize=9, markeredgecolor="black")
+    axes[1].set_title("Treatment Effect Precision (95% CI Shrinkage)")
+    axes[1].set_ylabel("Estimated Treatment Effect (₹)")
+    axes[1].grid(axis="y", linestyle="--", alpha=0.7)
+    for i, (m, eff, se) in enumerate(zip(methods, effects, ses)):
+        axes[1].annotate(f"₹{eff:.2f} ± ₹{1.96*se:.2f}\n(SE: {se:.2f})",
+                         xy=(i, eff), xytext=(0, 15), textcoords="offset points",
+                         ha="center", fontsize=9.5, weight="bold")
+
+    plt.suptitle("CUPED Variance Reduction Analytics: Enhancing Sensitivity without Point-Estimate Bias", y=1.02)
+    plt.tight_layout()
+    out_path = os.path.join(FIGURES_DIR, "15_cuped_variance_reduction_comparison.png")
+    plt.savefig(out_path, dpi=300, bbox_inches="tight")
+    plt.close()
+    return out_path
+
+
 def generate_all_visualizations():
-    """Master visualization pipeline. Generates all 8 high-resolution figures."""
+    """Master visualization pipeline. Generates all 15 high-resolution figures."""
     os.makedirs(FIGURES_DIR, exist_ok=True)
     os.makedirs(TABLES_DIR, exist_ok=True)
     print("=" * 70)
@@ -435,12 +694,66 @@ def generate_all_visualizations():
     p7 = plot_noshow_deepdive(df_appointments, df_stylists)
     print(f"-> Saved: {p7}")
 
-    print("\n[8/8] Plotting Experiment Balance and Outcomes...")
+    print("\n[8/15] Plotting Experiment Balance and Outcomes...")
     p8 = plot_experiment_baseline_balance(df_experiment)
     print(f"-> Saved: {p8}")
 
+    # Phase 2 figures
+    from statistical_inference import power_sensitivity_grid, estimate_proportions_treatment_effect, estimate_continuous_treatment_effect
+    from causal_inference import fit_event_study_model, compute_cuped_adjustment, evaluate_subgroup_effects
+
+    print("\n[9/15] Plotting Power Analysis Sensitivity...")
+    df_sens = power_sensitivity_grid(p_baseline=0.575)
+    p9 = plot_power_sensitivity(df_sens)
+    print(f"-> Saved: {p9}")
+
+    print("\n[10/15] Plotting A/B Test Treatment vs Control...")
+    p10 = plot_ab_test_treatment_vs_control(df_experiment)
+    print(f"-> Saved: {p10}")
+
+    print("\n[11/15] Plotting Treatment Effects Forest Plot...")
+    # Calculate effects for forest plot
+    t_ret = df_experiment[df_experiment["treatment_assignment"] == "Treatment"]["retention_outcome"]
+    c_ret = df_experiment[df_experiment["treatment_assignment"] == "Control"]["retention_outcome"]
+    res_ret = estimate_proportions_treatment_effect(t_ret.sum(), len(t_ret), c_ret.sum(), len(c_ret), "60-Day Retention Rate")
+
+    t_ns = df_experiment[df_experiment["treatment_assignment"] == "Treatment"]["no_show_outcome"]
+    c_ns = df_experiment[df_experiment["treatment_assignment"] == "Control"]["no_show_outcome"]
+    res_ns = estimate_proportions_treatment_effect(t_ns.sum(), len(t_ns), c_ns.sum(), len(c_ns), "No-Show Rate")
+
+    t_rev = df_experiment[df_experiment["treatment_assignment"] == "Treatment"]["revenue_per_visit"]
+    c_rev = df_experiment[df_experiment["treatment_assignment"] == "Control"]["revenue_per_visit"]
+    res_rev = estimate_continuous_treatment_effect(t_rev, c_rev, "Revenue per Visit (INR)")
+    # Normalize rev scale for forest visual or display
+    p11 = plot_treatment_effects_forest([res_ret, res_ns])
+    print(f"-> Saved: {p11}")
+
+    print("\n[12/15] Plotting DiD Parallel Trends Inspection...")
+    df_historical = pd.read_csv(os.path.join(PROCESSED_DATA_DIR, "historical_regional_data_clean.csv"))
+    p12 = plot_did_parallel_trends(df_historical)
+    print(f"-> Saved: {p12}")
+
+    print("\n[13/15] Plotting DiD Event Study Dynamics...")
+    df_es = fit_event_study_model(df_historical, "revenue_per_visit")
+    p13 = plot_did_event_study(df_es, "Revenue per Visit (INR)")
+    print(f"-> Saved: {p13}")
+
+    print("\n[14/15] Plotting Subgroup Heterogeneity...")
+    df_merged_exp = df_experiment.merge(df_customers[["customer_id", "customer_segment"]], on="customer_id", how="left")
+    df_merged_exp = df_merged_exp.merge(df_outlets[["outlet_id", "tier", "region"]], on="outlet_id", how="left")
+    df_sub1 = evaluate_subgroup_effects(df_merged_exp, "customer_segment", "retention_outcome")
+    df_sub2 = evaluate_subgroup_effects(df_merged_exp, "tier", "retention_outcome")
+    df_subgroups = pd.concat([df_sub1, df_sub2], ignore_index=True)
+    p14 = plot_segmentation_heterogeneity(df_subgroups)
+    print(f"-> Saved: {p14}")
+
+    print("\n[15/15] Plotting CUPED Variance Reduction Comparison...")
+    cuped_res = compute_cuped_adjustment(df_experiment, "treatment_assignment", "revenue_per_visit", "pre_experiment_revenue")
+    p15 = plot_cuped_comparison(cuped_res)
+    print(f"-> Saved: {p15}")
+
     print("\n" + "=" * 70)
-    print("ALL VISUALIZATIONS GENERATED SUCCESSFULLY!")
+    print("ALL 15 VISUALIZATIONS GENERATED SUCCESSFULLY!")
     print("=" * 70)
 
 
