@@ -1,0 +1,23 @@
+outlet_id,outlet_name,location,region,tier,opening_date,total_appointments,completed_appointments,total_no_shows,total_cancellations,total_walk_ins,gross_service_revenue,avg_revenue_per_completed_visit,unique_customers,completion_rate,no_show_rate,cancellation_rate,walk_in_rate
+OUT001,Aura Luxe - RS Puram,RS Puram,Central,Flagship Premium,2018-01-15,20240,16447,1612,2181,2853,31930893.32,1941.18,12772,0.8126,0.0796,0.1078,0.141
+OUT002,Aura Luxe - Race Course,Race Course,Central,Flagship Premium,2018-04-10,20237,16451,1667,2119,2883,31832608.13,1934.59,12805,0.8129,0.0824,0.1047,0.1425
+OUT003,Aura Luxe - Gandhipuram,Gandhipuram,Central,High Volume Urban,2018-07-22,17637,14268,1433,1936,2502,23481703.62,1645.35,11529,0.809,0.0812,0.1098,0.1419
+OUT004,Aura Luxe - Town Hall,Town Hall,Central,Commercial Core,2018-11-05,10823,8793,885,1145,1476,15000484.6,1705.51,7921,0.8124,0.0818,0.1058,0.1364
+OUT005,Aura Luxe - Ramanathapuram,Ramanathapuram,Central,High Volume Urban,2019-02-18,17565,14270,1375,1920,2432,24079754.23,1687.11,11595,0.8124,0.0783,0.1093,0.1385
+OUT006,Aura Luxe - Peelamedu,Peelamedu,East,Student & IT Hub,2019-05-12,17615,14344,1419,1852,2452,24255200.15,1690.5,11526,0.8143,0.0806,0.1051,0.1392
+OUT007,Aura Luxe - Hopes College,Hopes College,East,Student & IT Hub,2019-08-30,17634,14307,1408,1919,2461,24321261.19,1699.66,11540,0.8113,0.0798,0.1088,0.1396
+OUT008,Aura Luxe - Singanallur,Singanallur,East,Residential Family,2019-12-10,10818,8768,859,1191,1520,14889682.56,1697.84,7959,0.8105,0.0794,0.1101,0.1405
+OUT009,Aura Luxe - Ondipudur,Ondipudur,East,Suburban Value,2020-03-15,10641,8600,882,1159,1497,13611362.77,1582.39,7886,0.8082,0.0829,0.1089,0.1407
+OUT010,Aura Luxe - Trichy Road,Trichy Road,East,High Volume Urban,2020-09-01,17902,14474,1475,1953,2466,24137225.25,1667.31,11737,0.8085,0.0824,0.1091,0.1377
+OUT011,Aura Luxe - Sulur,Sulur,East,Suburban Value,2021-01-20,11111,8992,890,1229,1540,13918793.3,1547.46,8183,0.8093,0.0801,0.1106,0.1386
+OUT012,Aura Luxe - Saibaba Colony,Saibaba Colony,North,Residential Premium,2018-09-14,14856,12066,1153,1637,2105,20467053.91,1695.81,10175,0.8122,0.0776,0.1102,0.1417
+OUT013,Aura Luxe - Saravanampatti,Saravanampatti,North,IT Corridor High Growth,2019-06-25,10748,8783,821,1144,1495,14903248.11,1696.42,7904,0.8172,0.0764,0.1064,0.1391
+OUT014,Aura Luxe - Ganapathy,Ganapathy,North,Residential Family,2020-01-18,10985,8879,905,1201,1583,14935823.28,1681.7,8110,0.8083,0.0824,0.1093,0.1441
+OUT015,Aura Luxe - Thudiyalur,Thudiyalur,North,Suburban High Growth,2021-04-10,10675,8650,851,1174,1470,14517236.57,1678.03,7921,0.8103,0.0797,0.11,0.1377
+OUT016,Aura Luxe - Podanur,Podanur,South,Suburban Value,2020-07-08,10895,8824,859,1212,1566,14020431.0,1588.52,8049,0.8099,0.0788,0.1112,0.1437
+OUT017,Aura Luxe - Sundarapuram,Sundarapuram,South,Suburban Family,2020-11-20,10943,8908,860,1175,1565,15273438.88,1714.09,8040,0.814,0.0786,0.1074,0.143
+OUT018,Aura Luxe - Ukkadam,Ukkadam,South,Commercial Core,2021-02-14,10760,8660,926,1174,1416,14853642.67,1714.85,7782,0.8048,0.0861,0.1091,0.1316
+OUT019,Aura Luxe - Kuniyamuthur,Kuniyamuthur,South,Suburban Value,2021-08-05,10994,8921,872,1201,1510,13868086.7,1554.21,8079,0.8114,0.0793,0.1092,0.1373
+OUT020,Aura Luxe - Kovaipudur,Kovaipudur,South,Residential Family,2022-01-10,10829,8773,890,1166,1464,14808391.36,1687.59,7952,0.8101,0.0822,0.1077,0.1352
+OUT021,Aura Luxe - Vadavalli,Vadavalli,West,Residential Premium,2019-10-15,15048,12242,1146,1660,2120,21004936.34,1715.42,10196,0.8135,0.0762,0.1103,0.1409
+OUT022,Aura Luxe - Perur,Perur,West,Suburban Value,2022-03-01,11044,9012,861,1171,1505,13864722.51,1538.09,8058,0.816,0.078,0.106,0.1363

@@ -1,0 +1,120 @@
+stylist_id,outlet_id,experience_level,specialization,base_retention_score
+STY001,OUT001,Mid-Level,Massage Therapist,0.705
+STY002,OUT001,Senior,Massage Therapist,0.697
+STY003,OUT001,Junior,Skin Specialist,0.788
+STY004,OUT001,Mid-Level,Skin Specialist,0.656
+STY005,OUT001,Master Stylist,Aesthetician,0.932
+STY006,OUT001,Junior,Aesthetician,0.705
+STY007,OUT001,Mid-Level,Bridal & Makeup Artist,0.652
+STY008,OUT002,Junior,Skin Specialist,0.834
+STY009,OUT002,Junior,Aesthetician,0.942
+STY010,OUT002,Junior,Bridal & Makeup Artist,0.886
+STY011,OUT002,Junior,Aesthetician,0.828
+STY012,OUT002,Junior,Skin Specialist,0.854
+STY013,OUT002,Mid-Level,Colorist & Stylist,0.935
+STY014,OUT002,Master Stylist,Colorist & Stylist,0.766
+STY015,OUT003,Junior,Colorist & Stylist,0.855
+STY016,OUT003,Mid-Level,Aesthetician,0.799
+STY017,OUT003,Junior,Bridal & Makeup Artist,0.767
+STY018,OUT003,Junior,Aesthetician,0.744
+STY019,OUT003,Mid-Level,Colorist & Stylist,0.82
+STY020,OUT003,Junior,Colorist & Stylist,0.883
+STY021,OUT004,Master Stylist,Bridal & Makeup Artist,0.928
+STY022,OUT004,Senior,Bridal & Makeup Artist,0.709
+STY023,OUT004,Junior,Massage Therapist,0.767
+STY024,OUT004,Mid-Level,Massage Therapist,0.826
+STY025,OUT004,Master Stylist,Aesthetician,0.813
+STY026,OUT005,Junior,Massage Therapist,0.672
+STY027,OUT005,Master Stylist,Hair Stylist,0.71
+STY028,OUT005,Junior,Skin Specialist,0.71
+STY029,OUT005,Senior,Skin Specialist,0.881
+STY030,OUT005,Junior,Colorist & Stylist,0.685
+STY031,OUT005,Senior,Aesthetician,0.749
+STY032,OUT006,Junior,Bridal & Makeup Artist,0.748
+STY033,OUT006,Senior,Bridal & Makeup Artist,0.916
+STY034,OUT006,Mid-Level,Massage Therapist,0.942
+STY035,OUT006,Senior,Massage Therapist,0.818
+STY036,OUT006,Senior,Skin Specialist,0.807
+STY037,OUT006,Mid-Level,Colorist & Stylist,0.782
+STY038,OUT007,Junior,Hair Stylist,0.744
+STY039,OUT007,Mid-Level,Bridal & Makeup Artist,0.692
+STY040,OUT007,Mid-Level,Skin Specialist,0.711
+STY041,OUT007,Master Stylist,Skin Specialist,0.858
+STY042,OUT007,Senior,Colorist & Stylist,0.892
+STY043,OUT007,Mid-Level,Bridal & Makeup Artist,0.787
+STY044,OUT008,Junior,Aesthetician,0.918
+STY045,OUT008,Mid-Level,Colorist & Stylist,0.687
+STY046,OUT008,Mid-Level,Bridal & Makeup Artist,0.683
+STY047,OUT008,Junior,Bridal & Makeup Artist,0.65
+STY048,OUT008,Mid-Level,Skin Specialist,0.652
+STY049,OUT009,Mid-Level,Hair Stylist,0.795
+STY050,OUT009,Senior,Colorist & Stylist,0.751
+STY051,OUT009,Master Stylist,Bridal & Makeup Artist,0.716
+STY052,OUT009,Mid-Level,Aesthetician,0.759
+STY053,OUT009,Master Stylist,Aesthetician,0.724
+STY054,OUT010,Senior,Skin Specialist,0.74
+STY055,OUT010,Mid-Level,Hair Stylist,0.73
+STY056,OUT010,Master Stylist,Aesthetician,0.665
+STY057,OUT010,Mid-Level,Hair Stylist,0.84
+STY058,OUT010,Senior,Massage Therapist,0.797
+STY059,OUT010,Master Stylist,Aesthetician,0.674
+STY060,OUT011,Mid-Level,Hair Stylist,0.868
+STY061,OUT011,Mid-Level,Aesthetician,0.945
+STY062,OUT011,Mid-Level,Hair Stylist,0.695
+STY063,OUT011,Mid-Level,Massage Therapist,0.908
+STY064,OUT011,Mid-Level,Aesthetician,0.655
+STY065,OUT012,Mid-Level,Skin Specialist,0.755
+STY066,OUT012,Junior,Hair Stylist,0.857
+STY067,OUT012,Mid-Level,Colorist & Stylist,0.901
+STY068,OUT012,Senior,Hair Stylist,0.684
+STY069,OUT012,Master Stylist,Bridal & Makeup Artist,0.859
+STY070,OUT013,Junior,Colorist & Stylist,0.945
+STY071,OUT013,Mid-Level,Hair Stylist,0.723
+STY072,OUT013,Junior,Aesthetician,0.817
+STY073,OUT013,Senior,Hair Stylist,0.734
+STY074,OUT013,Senior,Skin Specialist,0.907
+STY075,OUT014,Mid-Level,Hair Stylist,0.843
+STY076,OUT014,Junior,Aesthetician,0.92
+STY077,OUT014,Mid-Level,Skin Specialist,0.762
+STY078,OUT014,Master Stylist,Hair Stylist,0.652
+STY079,OUT014,Junior,Colorist & Stylist,0.796
+STY080,OUT015,Mid-Level,Massage Therapist,0.717
+STY081,OUT015,Senior,Hair Stylist,0.798
+STY082,OUT015,Junior,Skin Specialist,0.847
+STY083,OUT015,Mid-Level,Aesthetician,0.803
+STY084,OUT015,Mid-Level,Bridal & Makeup Artist,0.723
+STY085,OUT016,Master Stylist,Massage Therapist,0.796
+STY086,OUT016,Master Stylist,Skin Specialist,0.888
+STY087,OUT016,Mid-Level,Aesthetician,0.851
+STY088,OUT016,Senior,Aesthetician,0.867
+STY089,OUT016,Mid-Level,Skin Specialist,0.881
+STY090,OUT017,Junior,Aesthetician,0.932
+STY091,OUT017,Master Stylist,Massage Therapist,0.915
+STY092,OUT017,Senior,Massage Therapist,0.928
+STY093,OUT017,Mid-Level,Massage Therapist,0.822
+STY094,OUT017,Master Stylist,Aesthetician,0.738
+STY095,OUT018,Mid-Level,Hair Stylist,0.745
+STY096,OUT018,Junior,Hair Stylist,0.768
+STY097,OUT018,Senior,Skin Specialist,0.821
+STY098,OUT018,Junior,Bridal & Makeup Artist,0.758
+STY099,OUT018,Mid-Level,Colorist & Stylist,0.913
+STY100,OUT019,Senior,Hair Stylist,0.691
+STY101,OUT019,Senior,Massage Therapist,0.739
+STY102,OUT019,Mid-Level,Colorist & Stylist,0.91
+STY103,OUT019,Master Stylist,Colorist & Stylist,0.652
+STY104,OUT019,Mid-Level,Aesthetician,0.845
+STY105,OUT020,Senior,Bridal & Makeup Artist,0.917
+STY106,OUT020,Mid-Level,Aesthetician,0.824
+STY107,OUT020,Mid-Level,Bridal & Makeup Artist,0.748
+STY108,OUT020,Junior,Bridal & Makeup Artist,0.736
+STY109,OUT020,Mid-Level,Bridal & Makeup Artist,0.725
+STY110,OUT021,Junior,Bridal & Makeup Artist,0.811
+STY111,OUT021,Mid-Level,Massage Therapist,0.731
+STY112,OUT021,Master Stylist,Aesthetician,0.903
+STY113,OUT021,Junior,Bridal & Makeup Artist,0.812
+STY114,OUT021,Mid-Level,Aesthetician,0.69
+STY115,OUT022,Master Stylist,Colorist & Stylist,0.747
+STY116,OUT022,Senior,Skin Specialist,0.782
+STY117,OUT022,Junior,Massage Therapist,0.705
+STY118,OUT022,Junior,Hair Stylist,0.857
+STY119,OUT022,Junior,Colorist & Stylist,0.697

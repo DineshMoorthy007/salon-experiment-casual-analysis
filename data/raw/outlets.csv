@@ -1,0 +1,23 @@
+outlet_id,outlet_name,location,region,tier,opening_date
+OUT001,Aura Luxe - RS Puram,RS Puram,Central,Flagship Premium,2018-01-15
+OUT002,Aura Luxe - Race Course,Race Course,Central,Flagship Premium,2018-04-10
+OUT003,Aura Luxe - Gandhipuram,Gandhipuram,Central,High Volume Urban,2018-07-22
+OUT004,Aura Luxe - Town Hall,Town Hall,Central,Commercial Core,2018-11-05
+OUT005,Aura Luxe - Ramanathapuram,Ramanathapuram,Central,High Volume Urban,2019-02-18
+OUT006,Aura Luxe - Peelamedu,Peelamedu,East,Student & IT Hub,2019-05-12
+OUT007,Aura Luxe - Hopes College,Hopes College,East,Student & IT Hub,2019-08-30
+OUT008,Aura Luxe - Singanallur,Singanallur,East,Residential Family,2019-12-10
+OUT009,Aura Luxe - Ondipudur,Ondipudur,East,Suburban Value,2020-03-15
+OUT010,Aura Luxe - Trichy Road,Trichy Road,East,High Volume Urban,2020-09-01
+OUT011,Aura Luxe - Sulur,Sulur,East,Suburban Value,2021-01-20
+OUT012,Aura Luxe - Saibaba Colony,Saibaba Colony,North,Residential Premium,2018-09-14
+OUT013,Aura Luxe - Saravanampatti,Saravanampatti,North,IT Corridor High Growth,2019-06-25
+OUT014,Aura Luxe - Ganapathy,Ganapathy,North,Residential Family,2020-01-18
+OUT015,Aura Luxe - Thudiyalur,Thudiyalur,North,Suburban High Growth,2021-04-10
+OUT016,Aura Luxe - Podanur,Podanur,South,Suburban Value,2020-07-08
+OUT017,Aura Luxe - Sundarapuram,Sundarapuram,South,Suburban Family,2020-11-20
+OUT018,Aura Luxe - Ukkadam,Ukkadam,South,Commercial Core,2021-02-14
+OUT019,Aura Luxe - Kuniyamuthur,Kuniyamuthur,South,Suburban Value,2021-08-05
+OUT020,Aura Luxe - Kovaipudur,Kovaipudur,South,Residential Family,2022-01-10
+OUT021,Aura Luxe - Vadavalli,Vadavalli,West,Residential Premium,2019-10-15
+OUT022,Aura Luxe - Perur,Perur,West,Suburban Value,2022-03-01

@@ -1,0 +1,25 @@
+service_id,service_name,service_category,standard_price,duration_minutes
+SRV001,Men Classic Haircut & Styling,Hair Care,350.0,30
+SRV002,Women Precision Haircut & Blowdry,Hair Care,850.0,45
+SRV003,Hair Spa & Deep Conditioning,Hair Care,1400.0,60
+SRV004,Keratin Smoothing Treatment,Hair Care,4500.0,120
+SRV005,Global Hair Color & Highlights,Hair Care,3800.0,90
+SRV006,Beard Grooming & Royal Shave,Hair Care,300.0,25
+SRV007,Anti-Dandruff Scalp Detox,Hair Care,1200.0,45
+SRV008,Hydrating Fruit Cleanup,Skin & Facial,750.0,40
+SRV009,Herbal Glow Facial,Skin & Facial,1500.0,60
+SRV010,Anti-Aging Collagen Facial,Skin & Facial,2800.0,75
+SRV011,Deep Cleansing Charcoal Facial,Skin & Facial,1800.0,60
+SRV012,Gold Radiance Luxury Facial,Skin & Facial,3500.0,80
+SRV013,Under Eye Dark Circle Treatment,Skin & Facial,950.0,35
+SRV014,Swedish Full Body Massage,Spa & Massage,2400.0,60
+SRV015,Deep Tissue Therapeutic Massage,Spa & Massage,3000.0,75
+SRV016,Aromatherapy Relaxation Spa,Spa & Massage,2600.0,60
+SRV017,Ayurvedic Foot Reflexology,Spa & Massage,800.0,30
+SRV018,Hot Stone Stress Relief Therapy,Spa & Massage,3600.0,90
+SRV019,Classic South Indian Bridal Makeup,Bridal & Makeup,12500.0,180
+SRV020,Engagement Glam HD Makeup,Bridal & Makeup,6500.0,120
+SRV021,Party Occasion Makeup & Draping,Bridal & Makeup,3200.0,60
+SRV022,Pre-Bridal Luxury Package,Bridal & Makeup,16000.0,240
+SRV023,Classic Manicure & Pedicure Duo,Nail Care,1100.0,60
+SRV024,Gel Nail Art & Extensions,Nail Care,2200.0,75

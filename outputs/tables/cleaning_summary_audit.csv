@@ -1,0 +1,9 @@
+dataset,initial_rows,duplicates_removed,nulls_handled,final_rows,invalid_fk,invalid_ages_fixed,missing_booking_channels_imputed,walkins_missing_customer_id_standardized,service_names_standardized,misclassified_no_shows_corrected,negative_revenues_rectified,extreme_revenue_outliers_adjusted,invalid_dates_detected,anonymous_customers_standardized,nulls
+outlets,22,0,0.0,22,,,,,,,,,,,
+services,24,0,0.0,24,,,,,,,,,,,
+stylists,119,0,,119,0.0,,,,,,,,,,
+customers,42000,0,,42000,,0.0,,,,,,,,,
+appointments,303900,3900,,300000,,,3600.0,14765.0,81200.0,6650.0,14.0,21.0,0.0,,
+product_sales,48000,0,,48000,,,,,,,,,,5219.0,
+experiment_data,18000,0,,18000,,,,,,,,,,,0.0
+historical_regional_data,240,0,,240,,,,,,,,,,,
