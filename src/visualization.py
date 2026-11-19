@@ -265,7 +265,12 @@ def plot_monthly_revenue_trends(df_appointments: pd.DataFrame) -> str:
     ax.set_title("Monthly Revenue Trajectory (2022–2024): Capturing Festive Seasonality & Growth")
     ax.set_xlabel("Year-Month")
     ax.set_ylabel("Monthly Revenue (₹ Lakhs)")
-    ax.tick_params(axis="x", rotation=45)
+    # Compressed timestamps (quarterly intervals)
+    quarterly_idx = list(range(0, len(monthly), 3))
+    if (len(monthly) - 1) not in quarterly_idx:
+        quarterly_idx.append(len(monthly) - 1)
+    ax.set_xticks(quarterly_idx)
+    ax.set_xticklabels([monthly["year_month"].iloc[i] for i in quarterly_idx], rotation=30, ha="right", fontsize=9.5)
     ax.grid(True, linestyle="--", alpha=0.7)
 
     # Annotate Festive Peaks
@@ -535,7 +540,13 @@ def plot_did_parallel_trends(df_historical: pd.DataFrame) -> str:
             ax.legend(loc="upper left", frameon=True, facecolor="white")
 
     axes[2].set_xlabel("Year-Month")
-    axes[2].tick_params(axis="x", rotation=45)
+    # Compressed timestamps (quarterly intervals)
+    step = 4
+    q_idx = list(range(0, len(months), step))
+    if (len(months) - 1) not in q_idx:
+        q_idx.append(len(months) - 1)
+    axes[2].set_xticks(q_idx)
+    axes[2].set_xticklabels([months[i] for i in q_idx], rotation=30, ha="right", fontsize=9.5)
 
     plt.suptitle("Difference-in-Differences: Visualizing Parallel Trends & Post-Intervention Divergence", y=1.01)
     plt.tight_layout()
@@ -637,10 +648,17 @@ def plot_cuped_comparison(cuped_results: Dict) -> str:
     axes[1].set_title("Treatment Effect Precision (95% CI Shrinkage)")
     axes[1].set_ylabel("Estimated Treatment Effect (₹)")
     axes[1].grid(axis="y", linestyle="--", alpha=0.7)
+    axes[1].set_xlim(-0.75, 1.75)
+    y_min = min(eff - 1.96 * se for eff, se in zip(effects, ses))
+    y_max = max(eff + 1.96 * se for eff, se in zip(effects, ses))
+    y_padding = max(14.0, (y_max - y_min) * 0.35)
+    axes[1].set_ylim(y_min - y_padding, y_max + y_padding)
+
     for i, (m, eff, se) in enumerate(zip(methods, effects, ses)):
         axes[1].annotate(f"₹{eff:.2f} ± ₹{1.96*se:.2f}\n(SE: {se:.2f})",
-                         xy=(i, eff), xytext=(0, 15), textcoords="offset points",
-                         ha="center", fontsize=9.5, weight="bold")
+                         xy=(i, eff), xytext=(0, 16), textcoords="offset points",
+                         ha="center", fontsize=9.5, weight="bold",
+                         bbox=dict(boxstyle="round,pad=0.3", fc="white", ec="#cccccc", alpha=0.9))
 
     plt.suptitle("CUPED Variance Reduction Analytics: Enhancing Sensitivity without Point-Estimate Bias", y=1.02)
     plt.tight_layout()

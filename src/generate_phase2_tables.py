@@ -67,6 +67,11 @@ def generate_all_tables():
         t_group["no_show_outcome"].values, c_group["no_show_outcome"].values
     )
 
+    def format_pval_exp(p):
+        if p == 0.0 or p < 1e-100:
+            return "< 1.00e-100"
+        return f"{p:.2e}"
+
     exp_summary = [
         {
             "Metric": "60-Day Customer Retention Rate (Primary)",
@@ -76,7 +81,7 @@ def generate_all_tables():
             "Relative Change": f"{res_ret['relative_effect_pct']:+.2f}%",
             "95% Confidence Interval": f"[{res_ret['ci_lower_95']*100:+.2f} pp, {res_ret['ci_upper_95']*100:+.2f} pp]",
             "Bootstrap 95% CI": f"[{ret_boot_low*100:+.2f} pp, {ret_boot_high*100:+.2f} pp]",
-            "p-value": f"{res_ret['p_value']:.4e}",
+            "p-value": format_pval_exp(res_ret['p_value']),
             "Statistical Conclusion": "Statistically Significant (p < 0.001)",
             "Business Interpretation": "Highly effective. Automated WhatsApp reminders boosted repeat visits by ~6.0 pp (+10.4% relative lift)."
         },
@@ -88,7 +93,7 @@ def generate_all_tables():
             "Relative Change": f"{res_ns['relative_effect_pct']:+.2f}%",
             "95% Confidence Interval": f"[{res_ns['ci_lower_95']*100:+.2f} pp, {res_ns['ci_upper_95']*100:+.2f} pp]",
             "Bootstrap 95% CI": f"[{ns_boot_low*100:+.2f} pp, {ns_boot_high*100:+.2f} pp]",
-            "p-value": f"{res_ns['p_value']:.4e}",
+            "p-value": format_pval_exp(res_ns['p_value']),
             "Statistical Conclusion": "Statistically Significant (p < 0.001)",
             "Business Interpretation": "Substantial operational win. Unnotified no-shows dropped by ~4.7 pp (-35.9% relative drop), freeing high-value stylist hours."
         },
@@ -100,7 +105,7 @@ def generate_all_tables():
             "Relative Change": f"{res_rev['relative_effect_pct']:+.2f}%",
             "95% Confidence Interval": f"[Rs. {res_rev['ci_lower_95']:+.2f}, Rs. {res_rev['ci_upper_95']:+.2f}]",
             "Bootstrap 95% CI": f"[Rs. {rev_boot_low:+.2f}, Rs. {rev_boot_high:+.2f}]",
-            "p-value": f"{res_rev['p_value']:.4e}",
+            "p-value": format_pval_exp(res_rev['p_value']),
             "Statistical Conclusion": "Statistically Significant (p < 0.001)",
             "Business Interpretation": "Spend lift of Rs. 107.5/visit driven by increased appointment completion and upsell reminders in WhatsApp workflow."
         }
@@ -122,7 +127,7 @@ def generate_all_tables():
             "DiD Effect (beta3)": f"Rs. {did_rev['did_coefficient_beta3']:+.2f}",
             "Cluster-Robust SE": f"Rs. {did_rev['standard_error']:.2f}",
             "95% Confidence Interval": f"[Rs. {did_rev['ci_lower_95']:+.2f}, Rs. {did_rev['ci_upper_95']:+.2f}]",
-            "p-value": f"{did_rev['p_value']:.4e}",
+            "p-value": format_pval_exp(did_rev['p_value']),
             "Statistical Conclusion": "Statistically Significant (p < 0.001)",
             "Practical Economic Impact": "Policy intervention drove ~Rs. 175.2 average revenue gain per visit across Central & North regions."
         },
@@ -132,7 +137,7 @@ def generate_all_tables():
             "DiD Effect (beta3)": f"{did_ret['did_coefficient_beta3']*100:+.2f} pp",
             "Cluster-Robust SE": f"{did_ret['standard_error']*100:.2f} pp",
             "95% Confidence Interval": f"[{did_ret['ci_lower_95']*100:+.2f} pp, {did_ret['ci_upper_95']*100:+.2f} pp]",
-            "p-value": f"{did_ret['p_value']:.4e}",
+            "p-value": format_pval_exp(did_ret['p_value']),
             "Statistical Conclusion": "Statistically Significant (p < 0.001)",
             "Practical Economic Impact": "Sustained +4.6 pp lift in 60-day customer retention in policy-treated regions."
         },
@@ -142,7 +147,7 @@ def generate_all_tables():
             "DiD Effect (beta3)": f"{did_ns['did_coefficient_beta3']*100:+.2f} pp",
             "Cluster-Robust SE": f"{did_ns['standard_error']*100:.2f} pp",
             "95% Confidence Interval": f"[{did_ns['ci_lower_95']*100:+.2f} pp, {did_ns['ci_upper_95']*100:+.2f} pp]",
-            "p-value": f"{did_ns['p_value']:.4e}",
+            "p-value": format_pval_exp(did_ns['p_value']),
             "Statistical Conclusion": "Statistically Significant (p < 0.001)",
             "Practical Economic Impact": "No-show rate declined by 3.2 pp, reducing slot vacancy in treated hubs."
         }
