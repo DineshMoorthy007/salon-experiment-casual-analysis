@@ -48,8 +48,24 @@ st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
 
-    html, body, [class*="css"], [class*="st-"] {
+    /* Content Typography (Scoped safely to avoid breaking Streamlit Material Icons) */
+    html, body, .stMarkdown, .stText, p, h1, h2, h3, h4, h5, h6, 
+    [data-testid="stMetricValue"], [data-testid="stMetricLabel"] {
         font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    /* Protect Streamlit icon ligatures (sidebar collapse/expand buttons, header actions) */
+    [data-testid="stIconMaterial"],
+    [data-testid="stSidebarCollapseButton"],
+    [data-testid="stSidebarCollapseButton"] *,
+    [data-testid="collapsedControl"],
+    [data-testid="collapsedControl"] *,
+    header button *,
+    button[kind="header"] *,
+    .material-symbols-rounded,
+    .material-symbols-outlined,
+    [class*="material-symbols"] {
+        font-family: "Material Symbols Rounded", "Material Symbols Outlined", "Material Icons" !important;
     }
 
     /* Headings */
@@ -98,41 +114,70 @@ st.markdown("""
         color: #cbd5e1;
     }
 
-    /* Sidebar Spacing & Tab Styling */
+    /* Sidebar Layout & Modern Tab Navigation */
     [data-testid="stSidebar"] {
-        background-color: #0f1117;
+        background-color: #0b0f19;
         border-right: 1px solid rgba(255, 255, 255, 0.06);
     }
     
     [data-testid="stSidebar"] [data-testid="stRadio"] > div {
-        gap: 10px !important;
+        gap: 4px !important;
         display: flex;
         flex-direction: column;
     }
 
+    /* Remove transparent background & borders for each section */
     [data-testid="stSidebar"] [data-testid="stRadio"] label {
-        background: rgba(255, 255, 255, 0.04);
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
         border-radius: 8px;
-        padding: 10px 14px;
-        margin-bottom: 4px;
+        padding: 9px 14px !important;
+        margin: 0 !important;
         cursor: pointer;
-        transition: all 0.2s ease-in-out;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         width: 100%;
         display: flex;
         align-items: center;
     }
 
-    [data-testid="stSidebar"] [data-testid="stRadio"] label:hover {
-        background: rgba(255, 255, 255, 0.09);
-        border-color: rgba(59, 130, 246, 0.4);
-        transform: translateX(4px);
+    /* Modern Typography for Navigation Tabs */
+    [data-testid="stSidebar"] [data-testid="stRadio"] label p {
+        font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
+        font-size: 13.5px !important;
+        font-weight: 500 !important;
+        color: #94a3b8 !important;
+        letter-spacing: -0.15px !important;
+        line-height: 1.4 !important;
+        transition: color 0.2s ease, font-weight 0.2s ease;
     }
 
+    /* Clean Hover State */
+    [data-testid="stSidebar"] [data-testid="stRadio"] label:hover {
+        background: rgba(255, 255, 255, 0.05) !important;
+        transform: translateX(3px);
+    }
+    [data-testid="stSidebar"] [data-testid="stRadio"] label:hover p {
+        color: #f8fafc !important;
+    }
+
+    /* Active / Selected Tab State (Modern Left Accent & Subtle Glow) */
+    [data-testid="stSidebar"] [data-testid="stRadio"] label:has(input:checked),
     [data-testid="stSidebar"] [data-testid="stRadio"] label[data-checked="true"] {
-        background: rgba(59, 130, 246, 0.18);
-        border-color: #3b82f6;
-        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+        background: linear-gradient(90deg, rgba(59, 130, 246, 0.16) 0%, rgba(59, 130, 246, 0.04) 100%) !important;
+        border-left: 3px solid #3b82f6 !important;
+        border-radius: 0 8px 8px 0 !important;
+    }
+
+    [data-testid="stSidebar"] [data-testid="stRadio"] label:has(input:checked) p,
+    [data-testid="stSidebar"] [data-testid="stRadio"] label[data-checked="true"] p {
+        color: #60a5fa !important;
+        font-weight: 600 !important;
+    }
+
+    /* Hide the radio bullet circle for a pure modern nav menu feel */
+    [data-testid="stSidebar"] [data-testid="stRadio"] label > div:first-child {
+        display: none !important;
     }
 
     /* Streamlit Metric Overrides */
@@ -174,20 +219,23 @@ data = load_all_datasets()
 
 # Sidebar Navigation Header (Clean, Corporate)
 st.sidebar.markdown("""
-<div style="margin-bottom: 18px;">
-    <div style="font-size: 19px; font-weight: 800; color: #f8fafc; letter-spacing: -0.3px;">AURA LUXE SALON</div>
-    <div style="font-size: 11px; color: #94a3b8; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Causal Inference & Experimentation</div>
+<div style="margin-bottom: 20px;">
+    <div style="font-size: 18px; font-weight: 800; color: #f8fafc; letter-spacing: -0.3px;">AURA LUXE SALON</div>
+    <div style="font-size: 11px; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.6px; margin-top: 2px;">Causal Inference & Experimentation</div>
+</div>
+<div style="font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px;">
+    Navigation
 </div>
 """, unsafe_allow_html=True)
 
 page = st.sidebar.radio(
-    "Navigation Modules:",
+    "Navigation Modules",
     [
-        "1. Business Overview",
-        "2. A/B Experiment Analysis",
-        "3. Historical Causal Analysis (DiD)",
-        "4. Customer Segmentation",
-        "5. CUPED Variance Reduction"
+        "Business Overview",
+        "A/B Experiment Analysis",
+        "Historical Causal Analysis (DiD)",
+        "Customer Segmentation",
+        "CUPED Variance Reduction"
     ],
     label_visibility="collapsed"
 )
@@ -216,7 +264,7 @@ st.markdown("""
 # =====================================================================
 # PAGE 1: BUSINESS OVERVIEW
 # =====================================================================
-if page == "1. Business Overview":
+if page == "Business Overview":
     st.markdown('<div class="hero-title">Executive Business Overview & Operational KPIs</div>', unsafe_allow_html=True)
     st.markdown('<div class="hero-subtitle">Chain-Wide Operational Baseline across 22 Outlets in Coimbatore, Tamil Nadu (2022-2024 Panel)</div>', unsafe_allow_html=True)
 
@@ -369,7 +417,7 @@ if page == "1. Business Overview":
 # =====================================================================
 # PAGE 2: A/B EXPERIMENT ANALYSIS
 # =====================================================================
-elif page == "2. A/B Experiment Analysis":
+elif page == "A/B Experiment Analysis":
     st.markdown('<div class="hero-title">Prospective Randomized A/B Experiment Analysis</div>', unsafe_allow_html=True)
     st.markdown('<div class="hero-subtitle">Evaluation of Automated WhatsApp Confirmation & Rescheduling System (N = 18,000 Active Clients)</div>', unsafe_allow_html=True)
 
@@ -459,7 +507,7 @@ elif page == "2. A/B Experiment Analysis":
 # =====================================================================
 # PAGE 3: HISTORICAL CAUSAL ANALYSIS (DiD)
 # =====================================================================
-elif page == "3. Historical Causal Analysis (DiD)":
+elif page == "Historical Causal Analysis (DiD)":
     st.markdown('<div class="hero-title">Difference-in-Differences (DiD) Regional Policy Analysis</div>', unsafe_allow_html=True)
     st.markdown('<div class="hero-subtitle">Quasi-Experimental Impact of Regional Quality & Service Guarantee Policy (2021-2024 Panel, 48 Months)</div>', unsafe_allow_html=True)
 
@@ -502,9 +550,25 @@ elif page == "3. Historical Causal Analysis (DiD)":
             labels={month_col: "Month", "revenue_per_visit": "Revenue / Visit (Rs.)", "group": "Regional Cohort"},
             color_discrete_map={"Policy Regions (Central, North)": "#3b82f6", "Comparison Regions (South, East, West)": "#94a3b8"}
         )
-        fig_did.add_vline(x="2023-01", line_width=2, line_dash="dash", line_color="#ef4444",
-                          annotation_text="Policy Launch (Jan 2023)", annotation_position="top left",
-                          annotation_font=dict(color="#ef4444", size=11))
+        fig_did.add_shape(
+            type="line",
+            x0="2023-01",
+            x1="2023-01",
+            y0=0,
+            y1=1,
+            yref="paper",
+            line=dict(color="#ef4444", width=2, dash="dash")
+        )
+        fig_did.add_annotation(
+            x="2023-01",
+            y=1,
+            yref="paper",
+            text="Policy Launch (Jan 2023)",
+            showarrow=False,
+            xanchor="left",
+            yanchor="bottom",
+            font=dict(color="#ef4444", size=11)
+        )
         fig_did.update_layout(
             paper_bgcolor="rgba(0,0,0,0)",
             plot_bgcolor="rgba(0,0,0,0)",
@@ -547,7 +611,7 @@ elif page == "3. Historical Causal Analysis (DiD)":
 # =====================================================================
 # PAGE 4: CUSTOMER SEGMENTATION
 # =====================================================================
-elif page == "4. Customer Segmentation":
+elif page == "Customer Segmentation":
     st.markdown('<div class="hero-title">Customer & Business Segmentation Analytics</div>', unsafe_allow_html=True)
     st.markdown('<div class="hero-subtitle">Evaluating Treatment Effect Heterogeneity across Personas, Outlets, and Verticals</div>', unsafe_allow_html=True)
 
@@ -624,7 +688,7 @@ elif page == "4. Customer Segmentation":
 # =====================================================================
 # PAGE 5: CUPED VARIANCE REDUCTION
 # =====================================================================
-elif page == "5. CUPED Variance Reduction":
+elif page == "CUPED Variance Reduction":
     st.markdown('<div class="hero-title">CUPED (Controlled-Experiment Using Pre-Experiment Data)</div>', unsafe_allow_html=True)
     st.markdown('<div class="hero-subtitle">Algorithmic Variance Reduction & Experiment Runtime Acceleration</div>', unsafe_allow_html=True)
 
