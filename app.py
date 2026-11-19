@@ -4,11 +4,11 @@ app.py
 Interactive Executive Analytical Dashboard for Salon Experiment & Causal Analysis.
 
 Enterprise: Aura Luxe Salon & Spa Chain (Coimbatore, Tamil Nadu)
-Technologies: Streamlit, Plotly, Pandas, NumPy, Matplotlib, Seaborn
+Technologies: Streamlit, Plotly (optional), Pandas, NumPy, Matplotlib, Seaborn
 
-Pages:
+Modules:
 1. Business Overview: Operational KPIs, Revenue Trends & Outlets across Coimbatore.
-2. A/B Experiment Analysis: Randomized Trial (WhatsApp Bot), SRM, CIs, Lift.
+2. A/B Experiment Analysis: Randomized Trial (WhatsApp System), SRM, CIs, Lift.
 3. Historical Causal Analysis: Difference-in-Differences (DiD), Parallel Trends, Event Study.
 4. Customer Segmentation: Heterogeneous Treatment Effects across Personas & Tiers.
 5. CUPED Variance Reduction: Covariance Adjustment, Distribution KDE, Duration Savings.
@@ -19,14 +19,20 @@ import sys
 import numpy as np
 import pandas as pd
 import streamlit as st
-import plotly.express as px
-import plotly.graph_objects as go
-from plotly.subplots import make_subplots
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Optional Plotly integration with graceful fallback
+try:
+    import plotly.express as px
+    import plotly.graph_objects as go
+    HAS_PLOTLY = True
+except ImportError:
+    HAS_PLOTLY = False
 
 # Set page config
 st.set_page_config(
     page_title="Aura Luxe Salon | Causal Analytics & Experimentation",
-    page_icon="✨",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -37,7 +43,7 @@ PROCESSED_DIR = os.path.join(BASE_DIR, "data", "processed")
 TABLES_DIR = os.path.join(BASE_DIR, "outputs", "tables")
 FIGURES_DIR = os.path.join(BASE_DIR, "outputs", "figures")
 
-# Custom Typography & Polished Styling
+# Custom Typography & Polished Styling (Corporate & Clean)
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
@@ -48,30 +54,27 @@ st.markdown("""
 
     /* Headings */
     .hero-title {
-        font-size: 28px;
+        font-size: 26px;
         font-weight: 800;
-        letter-spacing: -0.5px;
-        background: linear-gradient(90deg, #f59e0b 0%, #fbbf24 40%, #ffffff 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+        letter-spacing: -0.4px;
+        color: #f8fafc;
         margin-bottom: 2px;
     }
     .hero-subtitle {
-        font-size: 14px;
+        font-size: 13.5px;
         font-weight: 400;
         color: #94a3b8;
         margin-bottom: 18px;
     }
 
-    /* Section Cards */
+    /* Cards */
     .metric-glass-card {
         background: rgba(255, 255, 255, 0.03);
         border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 12px;
+        border-radius: 10px;
         padding: 16px 20px;
         backdrop-filter: blur(8px);
         margin-bottom: 12px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
 
     .disclosure-box {
@@ -83,6 +86,16 @@ st.markdown("""
         color: #fde68a;
         margin-bottom: 20px;
         line-height: 1.5;
+    }
+
+    .audit-box-pass {
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        border-radius: 8px;
+        padding: 12px 18px;
+        margin-bottom: 16px;
+        font-size: 13px;
+        color: #cbd5e1;
     }
 
     /* Sidebar Spacing & Tab Styling */
@@ -100,11 +113,11 @@ st.markdown("""
     [data-testid="stSidebar"] [data-testid="stRadio"] label {
         background: rgba(255, 255, 255, 0.04);
         border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 10px;
+        border-radius: 8px;
         padding: 10px 14px;
         margin-bottom: 4px;
         cursor: pointer;
-        transition: all 0.25s ease-in-out;
+        transition: all 0.2s ease-in-out;
         width: 100%;
         display: flex;
         align-items: center;
@@ -112,21 +125,21 @@ st.markdown("""
 
     [data-testid="stSidebar"] [data-testid="stRadio"] label:hover {
         background: rgba(255, 255, 255, 0.09);
-        border-color: rgba(245, 158, 11, 0.4);
+        border-color: rgba(59, 130, 246, 0.4);
         transform: translateX(4px);
     }
 
     [data-testid="stSidebar"] [data-testid="stRadio"] label[data-checked="true"] {
-        background: linear-gradient(135deg, rgba(245, 158, 11, 0.22), rgba(217, 119, 6, 0.15));
-        border-color: #f59e0b;
-        box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2);
+        background: rgba(59, 130, 246, 0.18);
+        border-color: #3b82f6;
+        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
     }
 
     /* Single Line Math Containers */
     .formula-card {
         background: rgba(15, 23, 42, 0.6);
         border: 1px solid rgba(59, 130, 246, 0.25);
-        border-radius: 10px;
+        border-radius: 8px;
         padding: 14px 20px;
         margin: 14px 0;
         text-align: center;
@@ -169,14 +182,11 @@ def load_all_datasets():
 
 data = load_all_datasets()
 
-# Sidebar Navigation Header
+# Sidebar Navigation Header (Clean, Corporate)
 st.sidebar.markdown("""
-<div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
-    <span style="font-size: 32px;">🌺</span>
-    <div>
-        <div style="font-size: 19px; font-weight: 800; color: #f8fafc; letter-spacing: -0.3px;">Aura Luxe Salon</div>
-        <div style="font-size: 11px; color: #94a3b8; font-weight: 500;">Causal Analytics & Experimentation</div>
-    </div>
+<div style="margin-bottom: 18px;">
+    <div style="font-size: 19px; font-weight: 800; color: #f8fafc; letter-spacing: -0.3px;">AURA LUXE SALON</div>
+    <div style="font-size: 11px; color: #94a3b8; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Causal Inference & Experimentation</div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -197,17 +207,17 @@ st.sidebar.markdown("---")
 st.sidebar.markdown("""
 <div style="font-size: 11px; color: #64748b; line-height: 1.6;">
     <strong>Network Scope:</strong> 22 Outlets (Coimbatore)<br>
-    <strong>Observation Window:</strong> 2021 – 2024 (48M)<br>
+    <strong>Panel Window:</strong> 2021 - 2024 (48 Months)<br>
     <strong>Trial Cohort:</strong> N = 18,000 Randomized<br>
     <strong>Methodology:</strong> DiD, CUPED, Neyman-Rubin
 </div>
 """, unsafe_allow_html=True)
 
-# Global Synthetic Data Banner
+# Global Synthetic Data Disclosure
 st.markdown("""
 <div class="disclosure-box">
-    <strong>⚠️ SYNTHETIC DATA DISCLOSURE:</strong> All datasets, customer records, appointment bookings,
-    and experimental metrics shown are 100% synthetically simulated in Python (Seed: 42) for educational
+    <strong>SYNTHETIC DATA DISCLOSURE:</strong> All datasets, customer records, appointment bookings,
+    and experimental metrics presented are 100% synthetically simulated in Python (Seed: 42) for educational
     and analytical evaluation. They do not represent proprietary records of any real commercial salon.
 </div>
 """, unsafe_allow_html=True)
@@ -218,7 +228,7 @@ st.markdown("""
 # =====================================================================
 if page == "1. Business Overview":
     st.markdown('<div class="hero-title">Executive Business Overview & Operational KPIs</div>', unsafe_allow_html=True)
-    st.markdown('<div class="hero-subtitle">Chain-Wide Operational Baseline across 22 Outlets in Coimbatore, Tamil Nadu (2022–2024 Panel)</div>', unsafe_allow_html=True)
+    st.markdown('<div class="hero-subtitle">Chain-Wide Operational Baseline across 22 Outlets in Coimbatore, Tamil Nadu (2022-2024 Panel)</div>', unsafe_allow_html=True)
 
     df_apts = data["appointments"]
     df_outlets = data["outlets"]
@@ -234,7 +244,7 @@ if page == "1. Business Overview":
 
     col1.metric("Total Appointments", f"{total_apts:,}")
     col2.metric("Salon Outlets", f"{total_outlets} Hubs")
-    col3.metric("Gross Revenue", f"₹{total_rev_cr:.2f} Cr")
+    col3.metric("Gross Revenue", f"Rs. {total_rev_cr:.2f} Cr")
     col4.metric("60-Day Retention", f"{overall_retention:.1f}%")
     col5.metric("No-Show Rate", f"{overall_noshow:.1f}%")
 
@@ -260,91 +270,109 @@ if page == "1. Business Overview":
         monthly_rev = filtered_apts.groupby("year_month")["revenue"].sum().reset_index()
         monthly_rev["rev_lakhs"] = monthly_rev["revenue"] / 1e5
 
-        # Interactive Plotly Line Chart with Compressed Timestamps (Quarterly)
-        fig_rev = px.area(
-            monthly_rev,
-            x="year_month",
-            y="rev_lakhs",
-            labels={"year_month": "Month", "rev_lakhs": "Revenue (₹ Lakhs)"},
-        )
-        fig_rev.update_traces(
-            line=dict(color="#f59e0b", width=2.5),
-            fillcolor="rgba(245, 158, 11, 0.15)",
-            hovertemplate="<b>%{x}</b><br>Revenue: ₹%{y:.2f} Lakhs<extra></extra>"
-        )
+        if HAS_PLOTLY:
+            # Compressed X-axis ticks to quarterly intervals
+            all_months = sorted(monthly_rev["year_month"].unique())
+            tick_vals = [m for m in all_months if m.endswith(("-01", "-04", "-07", "-10"))]
+            tick_text = []
+            for m in tick_vals:
+                yr, mo = m.split("-")
+                month_abbr = {"01": "Jan", "04": "Apr", "07": "Jul", "10": "Oct"}[mo]
+                tick_text.append(f"{month_abbr} '{yr[2:]}")
 
-        # Annotations for Diwali / Pongal surges
-        fig_rev.add_annotation(
-            x="2024-10", y=monthly_rev[monthly_rev["year_month"] == "2024-10"]["rev_lakhs"].values[0] if len(monthly_rev[monthly_rev["year_month"] == "2024-10"]) > 0 else 150,
-            text="🪔 Diwali Surge", showarrow=True, arrowhead=2, arrowcolor="#fbbf24",
-            font=dict(size=10, color="#fbbf24"), bgcolor="rgba(15, 23, 42, 0.8)", bordercolor="#f59e0b"
-        )
-
-        # Compress X-axis ticks to quarterly intervals (e.g., Jan '22, Apr '22, Jul '22, Oct '22)
-        all_months = sorted(monthly_rev["year_month"].unique())
-        tick_vals = [m for m in all_months if m.endswith(("-01", "-04", "-07", "-10"))]
-        tick_text = []
-        for m in tick_vals:
-            yr, mo = m.split("-")
-            month_abbr = {"01": "Jan", "04": "Apr", "07": "Jul", "10": "Oct"}[mo]
-            tick_text.append(f"{month_abbr} '{yr[2:]}")
-
-        fig_rev.update_layout(
-            paper_bgcolor="rgba(0,0,0,0)",
-            plot_bgcolor="rgba(0,0,0,0)",
-            margin=dict(l=10, r=10, t=20, b=10),
-            height=340,
-            xaxis=dict(
-                tickmode="array",
-                tickvals=tick_vals,
-                ticktext=tick_text,
-                tickangle=0,
-                showgrid=True,
-                gridcolor="rgba(255,255,255,0.06)",
-                color="#94a3b8"
-            ),
-            yaxis=dict(
-                showgrid=True,
-                gridcolor="rgba(255,255,255,0.06)",
-                color="#94a3b8",
-                title="Revenue (₹ Lakhs)"
+            fig_rev = px.area(
+                monthly_rev,
+                x="year_month",
+                y="rev_lakhs",
+                labels={"year_month": "Month", "rev_lakhs": "Revenue (Rs. Lakhs)"},
             )
-        )
-        st.plotly_chart(fig_rev, use_container_width=True)
-        st.caption("✨ Captures Diwali (Oct/Nov) and Pongal (Jan) peak booking demand alongside monsoon (Jul/Aug) dips.")
+            fig_rev.update_traces(
+                line=dict(color="#3b82f6", width=2.5),
+                fillcolor="rgba(59, 130, 246, 0.12)",
+                hovertemplate="<b>%{x}</b><br>Revenue: Rs. %{y:.2f} Lakhs<extra></extra>"
+            )
+            fig_rev.update_layout(
+                paper_bgcolor="rgba(0,0,0,0)",
+                plot_bgcolor="rgba(0,0,0,0)",
+                margin=dict(l=10, r=10, t=20, b=10),
+                height=340,
+                xaxis=dict(
+                    tickmode="array",
+                    tickvals=tick_vals,
+                    ticktext=tick_text,
+                    tickangle=0,
+                    showgrid=True,
+                    gridcolor="rgba(255,255,255,0.06)",
+                    color="#94a3b8"
+                ),
+                yaxis=dict(
+                    showgrid=True,
+                    gridcolor="rgba(255,255,255,0.06)",
+                    color="#94a3b8",
+                    title="Revenue (Rs. Lakhs)"
+                )
+            )
+            st.plotly_chart(fig_rev, use_container_width=True)
+        else:
+            # Fallback native Streamlit chart with compressed series
+            chart_df = monthly_rev.set_index("year_month")[["rev_lakhs"]]
+            st.line_chart(chart_df, height=340)
+
+        st.caption("Captures Diwali (Oct/Nov) and Pongal (Jan) peak booking demand alongside monsoon (Jul/Aug) dips.")
 
     with c_right:
         st.markdown("**Appointment Status Breakdown**")
         status_counts = filtered_apts["appointment_status"].value_counts().reset_index()
         status_counts.columns = ["Status", "Count"]
 
-        # Color mapping: Completed -> Emerald, Cancelled -> Amber, No-Show -> Rose
-        color_map = {
-            "Completed": "#10b981",
-            "Cancelled": "#f59e0b",
-            "No-Show": "#ef4444"
-        }
-
-        fig_pie = go.Figure(
-            data=[go.Pie(
+        if HAS_PLOTLY:
+            color_map = {
+                "Completed": "#10b981",
+                "Cancelled": "#f59e0b",
+                "No-Show": "#ef4444"
+            }
+            fig_pie = go.Figure(
+                data=[go.Pie(
+                    labels=status_counts["Status"],
+                    values=status_counts["Count"],
+                    hole=0.55,
+                    marker=dict(colors=[color_map.get(s, "#3b82f6") for s in status_counts["Status"]],
+                                line=dict(color="#0f1117", width=2)),
+                    textinfo="label+percent",
+                    hoverinfo="label+value+percent",
+                    textfont=dict(size=12, color="#ffffff"),
+                )]
+            )
+            fig_pie.update_layout(
+                paper_bgcolor="rgba(0,0,0,0)",
+                plot_bgcolor="rgba(0,0,0,0)",
+                margin=dict(l=10, r=10, t=10, b=10),
+                height=340,
+                showlegend=False
+            )
+            st.plotly_chart(fig_pie, use_container_width=True)
+        else:
+            # Transparent Matplotlib Fallback (zero white box)
+            fig, ax = plt.subplots(figsize=(4.5, 4.5))
+            fig.patch.set_alpha(0.0)
+            ax.patch.set_alpha(0.0)
+            colors = ["#10b981", "#f59e0b", "#ef4444"]
+            wedges, texts, autotexts = ax.pie(
+                status_counts["Count"],
                 labels=status_counts["Status"],
-                values=status_counts["Count"],
-                hole=0.55,
-                marker=dict(colors=[color_map.get(s, "#3b82f6") for s in status_counts["Status"]],
-                            line=dict(color="#0f1117", width=2)),
-                textinfo="label+percent",
-                hoverinfo="label+value+percent",
-                textfont=dict(size=12, color="#ffffff", family="Plus Jakarta Sans"),
-            )]
-        )
-        fig_pie.update_layout(
-            paper_bgcolor="rgba(0,0,0,0)",
-            plot_bgcolor="rgba(0,0,0,0)",
-            margin=dict(l=10, r=10, t=10, b=10),
-            height=340,
-            showlegend=False
-        )
-        st.plotly_chart(fig_pie, use_container_width=True)
+                autopct="%1.1f%%",
+                startangle=140,
+                colors=colors[:len(status_counts)],
+                wedgeprops=dict(width=0.48, edgecolor="#0f1117", linewidth=2)
+            )
+            for t in texts:
+                t.set_color("#cbd5e1")
+            for at in autotexts:
+                at.set_color("#ffffff")
+                at.set_weight("bold")
+            st.pyplot(fig)
+            plt.close()
+
         st.caption("Operational flow: 81.1% completed appointments with 8.0% unnotified no-show rate.")
 
 
@@ -359,14 +387,12 @@ elif page == "2. A/B Experiment Analysis":
     t_arm = df_exp[df_exp["treatment_assignment"] == "Treatment"]
     c_arm = df_exp[df_exp["treatment_assignment"] == "Control"]
 
-    # SRM Banner with Clean Styling
+    # SRM Audit Box (Clean, Professional)
     st.markdown("""
-    <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 8px; padding: 12px 18px; margin-bottom: 16px;">
-        <span style="color: #34d399; font-weight: 700;">✅ Sample Ratio Mismatch (SRM) Audit: Passed</span><br>
-        <span style="font-size: 13px; color: #cbd5e1;">
-            Chi-Square Goodness-of-Fit Statistic = <strong>0.0000</strong> (p-value = <strong>1.0000</strong>).
-            Observed <strong>9,000 Control vs. 9,000 Treatment</strong> perfectly matches the theoretical 1:1 allocation ratio. Zero sample selection bias detected.
-        </span>
+    <div class="audit-box-pass">
+        <strong style="color: #34d399;">SAMPLE RATIO MISMATCH (SRM) AUDIT: PASSED</strong><br>
+        Chi-Square Goodness-of-Fit Statistic = <strong>0.0000</strong> (p-value = <strong>1.0000</strong>).
+        Observed <strong>9,000 Control vs. 9,000 Treatment</strong> matches the theoretical 1:1 allocation ratio. Zero sample selection bias detected.
     </div>
     """, unsafe_allow_html=True)
 
@@ -385,17 +411,15 @@ elif page == "2. A/B Experiment Analysis":
 
     c1, c2, c3 = st.columns(3)
     c1.metric("60-Day Retention (Primary)", f"{ret_t:.2f}%", f"{ret_lift:+.2f} pp vs. Control ({ret_c:.2f}%)")
-    c2.metric("Revenue per Visit (Secondary)", f"₹{rev_t:.2f}", f"₹{rev_lift:+.2f} vs. Control (₹{rev_c:.2f})")
+    c2.metric("Revenue per Visit (Secondary)", f"Rs. {rev_t:.2f}", f"Rs. {rev_lift:+.2f} vs. Control (Rs. {rev_c:.2f})")
     c3.metric("No-Show Rate (Secondary)", f"{ns_t:.2f}%", f"{ns_drop:+.2f} pp vs. Control ({ns_c:.2f}%)", delta_color="inverse")
 
     st.markdown("---")
     st.subheader("Statistical Hypothesis Testing & Consolidated Results")
 
     if "exp_summary" in data:
-        df_exp_disp = data["exp_summary"].copy()
-        # Cleanly display without truncated index or dozens of zeros
         st.dataframe(
-            df_exp_disp,
+            data["exp_summary"],
             hide_index=True,
             use_container_width=True
         )
@@ -403,37 +427,36 @@ elif page == "2. A/B Experiment Analysis":
     st.markdown("---")
     st.subheader("Visual Treatment Comparison & Confidence Bounds")
 
-    # Interactive Plotly Treatment Comparison Bar Chart
-    comp_data = pd.DataFrame({
-        "Metric": ["60-Day Retention (%)", "60-Day Retention (%)", "Revenue / Visit (₹ / 10)", "Revenue / Visit (₹ / 10)", "No-Show Rate (%)", "No-Show Rate (%)"],
-        "Group": ["Control", "Treatment", "Control", "Treatment", "Control", "Treatment"],
-        "Value": [ret_c, ret_t, rev_c / 10, rev_t / 10, ns_c, ns_t],
-        "Label": [f"{ret_c:.2f}%", f"{ret_t:.2f}%", f"₹{rev_c:.2f}", f"₹{rev_t:.2f}", f"{ns_c:.2f}%", f"{ns_t:.2f}%"]
-    })
-
-    fig_comp = px.bar(
-        comp_data,
-        x="Metric",
-        y="Value",
-        color="Group",
-        barmode="group",
-        text="Label",
-        color_discrete_map={"Control": "#64748b", "Treatment": "#f59e0b"}
-    )
-    fig_comp.update_traces(
-        textposition="outside",
-        hovertemplate="<b>%{x}</b><br>Group: %{fullData.name}<br>Value: %{text}<extra></extra>"
-    )
-    fig_comp.update_layout(
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(0,0,0,0)",
-        margin=dict(l=10, r=10, t=20, b=10),
-        height=350,
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
-        yaxis=dict(showgrid=True, gridcolor="rgba(255,255,255,0.06)", color="#94a3b8", title="Normalized Value"),
-        xaxis=dict(color="#94a3b8")
-    )
-    st.plotly_chart(fig_comp, use_container_width=True)
+    if HAS_PLOTLY:
+        comp_data = pd.DataFrame({
+            "Metric": ["60-Day Retention (%)", "60-Day Retention (%)", "Revenue / Visit (Rs. / 10)", "Revenue / Visit (Rs. / 10)", "No-Show Rate (%)", "No-Show Rate (%)"],
+            "Group": ["Control", "Treatment", "Control", "Treatment", "Control", "Treatment"],
+            "Value": [ret_c, ret_t, rev_c / 10, rev_t / 10, ns_c, ns_t],
+            "Label": [f"{ret_c:.2f}%", f"{ret_t:.2f}%", f"Rs. {rev_c:.2f}", f"Rs. {rev_t:.2f}", f"{ns_c:.2f}%", f"{ns_t:.2f}%"]
+        })
+        fig_comp = px.bar(
+            comp_data,
+            x="Metric",
+            y="Value",
+            color="Group",
+            barmode="group",
+            text="Label",
+            color_discrete_map={"Control": "#64748b", "Treatment": "#3b82f6"}
+        )
+        fig_comp.update_traces(
+            textposition="outside",
+            hovertemplate="<b>%{x}</b><br>Group: %{fullData.name}<br>Value: %{text}<extra></extra>"
+        )
+        fig_comp.update_layout(
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(0,0,0,0)",
+            margin=dict(l=10, r=10, t=20, b=10),
+            height=350,
+            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+            yaxis=dict(showgrid=True, gridcolor="rgba(255,255,255,0.06)", color="#94a3b8", title="Normalized Value"),
+            xaxis=dict(color="#94a3b8")
+        )
+        st.plotly_chart(fig_comp, use_container_width=True)
 
     # High-Res Forest Plot
     st.image(
@@ -448,7 +471,7 @@ elif page == "2. A/B Experiment Analysis":
 # =====================================================================
 elif page == "3. Historical Causal Analysis (DiD)":
     st.markdown('<div class="hero-title">Difference-in-Differences (DiD) Regional Policy Analysis</div>', unsafe_allow_html=True)
-    st.markdown('<div class="hero-subtitle">Quasi-Experimental Impact of Regional Quality & Service Guarantee Policy (2021–2024 Panel, 48 Months)</div>', unsafe_allow_html=True)
+    st.markdown('<div class="hero-subtitle">Quasi-Experimental Impact of Regional Quality & Service Guarantee Policy (2021-2024 Panel, 48 Months)</div>', unsafe_allow_html=True)
 
     st.markdown("""
     **Policy Context:** In January 2023, Aura Luxe rolled out a centralized regional quality overhaul across its **Central** and **North** Coimbatore outlets without randomized rollout. We estimate causal treatment effects using two-way fixed effects panel regression with cluster-robust standard errors.
@@ -457,7 +480,7 @@ elif page == "3. Historical Causal Analysis (DiD)":
     # Single-line Econometric Formula
     st.markdown('<div class="formula-card">', unsafe_allow_html=True)
     st.latex(r"Y_{rt} = \beta_0 + \beta_1(\text{Treatment}_r) + \beta_2(\text{Post}_t) + \beta_3(\text{Treatment}_r \times \text{Post}_t) + \epsilon_{rt}")
-    st.caption("Econometric Model: β₃ represents the Average Treatment Effect on the Treated (ATT) with Cluster-Robust SE at the regional level.")
+    st.caption("Econometric Specification: Beta-3 represents the Average Treatment Effect on the Treated (ATT) with Cluster-Robust SE.")
     st.markdown('</div>', unsafe_allow_html=True)
 
     if "did_summary" in data:
@@ -471,51 +494,49 @@ elif page == "3. Historical Causal Analysis (DiD)":
     st.markdown("---")
     st.subheader("Parallel Trends & Dynamic Event Study")
 
-    # Interactive Plotly Parallel Trends Visualization
     df_hist = data["historical"].copy()
     df_hist["group"] = np.where(df_hist["treatment_region"] == 1, "Policy Regions (Central, North)", "Comparison Regions (South, East, West)")
     monthly_trends = df_hist.groupby(["year_month", "group"])["revenue_per_visit"].mean().reset_index()
 
-    fig_did = px.line(
-        monthly_trends,
-        x="year_month",
-        y="revenue_per_visit",
-        color="group",
-        labels={"year_month": "Month", "revenue_per_visit": "Revenue / Visit (₹)", "group": "Regional Cohort"},
-        color_discrete_map={"Policy Regions (Central, North)": "#3b82f6", "Comparison Regions (South, East, West)": "#94a3b8"}
-    )
-    fig_did.add_vline(x="2023-01", line_width=2, line_dash="dash", line_color="#ef4444",
-                      annotation_text="Policy Launch (Jan 2023)", annotation_position="top left",
-                      annotation_font=dict(color="#ef4444", size=11))
+    if HAS_PLOTLY:
+        all_hist_months = sorted(monthly_trends["year_month"].unique())
+        tick_vals_did = [m for m in all_hist_months if m.endswith(("-01", "-07"))]
+        tick_text_did = [f"{'Jan' if m.endswith('-01') else 'Jul'} '{m[:4][2:]}" for m in tick_vals_did]
 
-    # Compress X-axis ticks to bi-annual intervals (every 6 months)
-    all_hist_months = sorted(monthly_trends["year_month"].unique())
-    tick_vals_did = [m for m in all_hist_months if m.endswith(("-01", "-07"))]
-    tick_text_did = [f"{'Jan' if m.endswith('-01') else 'Jul'} '{m[:4][2:]}" for m in tick_vals_did]
-
-    fig_did.update_layout(
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(0,0,0,0)",
-        margin=dict(l=10, r=10, t=20, b=10),
-        height=380,
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
-        xaxis=dict(
-            tickmode="array",
-            tickvals=tick_vals_did,
-            ticktext=tick_text_did,
-            tickangle=0,
-            showgrid=True,
-            gridcolor="rgba(255,255,255,0.06)",
-            color="#94a3b8"
-        ),
-        yaxis=dict(
-            showgrid=True,
-            gridcolor="rgba(255,255,255,0.06)",
-            color="#94a3b8",
-            title="Revenue per Visit (₹)"
+        fig_did = px.line(
+            monthly_trends,
+            x="year_month",
+            y="revenue_per_visit",
+            color="group",
+            labels={"year_month": "Month", "revenue_per_visit": "Revenue / Visit (Rs.)", "group": "Regional Cohort"},
+            color_discrete_map={"Policy Regions (Central, North)": "#3b82f6", "Comparison Regions (South, East, West)": "#94a3b8"}
         )
-    )
-    st.plotly_chart(fig_did, use_container_width=True)
+        fig_did.add_vline(x="2023-01", line_width=2, line_dash="dash", line_color="#ef4444",
+                          annotation_text="Policy Launch (Jan 2023)", annotation_position="top left",
+                          annotation_font=dict(color="#ef4444", size=11))
+        fig_did.update_layout(
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(0,0,0,0)",
+            margin=dict(l=10, r=10, t=20, b=10),
+            height=380,
+            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+            xaxis=dict(
+                tickmode="array",
+                tickvals=tick_vals_did,
+                ticktext=tick_text_did,
+                tickangle=0,
+                showgrid=True,
+                gridcolor="rgba(255,255,255,0.06)",
+                color="#94a3b8"
+            ),
+            yaxis=dict(
+                showgrid=True,
+                gridcolor="rgba(255,255,255,0.06)",
+                color="#94a3b8",
+                title="Revenue per Visit (Rs.)"
+            )
+        )
+        st.plotly_chart(fig_did, use_container_width=True)
 
     # Dynamic Event Study Leads & Lags
     st.image(
@@ -568,31 +589,31 @@ elif page == "4. Customer Segmentation":
 
     st.dataframe(disp_table, hide_index=True, use_container_width=True)
 
-    # Plotly Horizontal Bar Chart of Heterogeneous Treatment Effects
-    fig_lift = px.bar(
-        disp_table,
-        x="Absolute Lift (pp)",
-        y=col_name,
-        orientation="h",
-        text="Absolute Lift (pp)",
-        color="Absolute Lift (pp)",
-        color_continuous_scale="Viridis",
-        labels={"Absolute Lift (pp)": "Retention Lift (percentage points)", col_name: dim}
-    )
-    fig_lift.update_traces(
-        texttemplate="+%{text:.2f} pp",
-        textposition="outside"
-    )
-    fig_lift.update_layout(
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(0,0,0,0)",
-        margin=dict(l=10, r=10, t=10, b=10),
-        height=280,
-        coloraxis_showscale=False,
-        xaxis=dict(showgrid=True, gridcolor="rgba(255,255,255,0.06)", color="#94a3b8"),
-        yaxis=dict(color="#94a3b8")
-    )
-    st.plotly_chart(fig_lift, use_container_width=True)
+    if HAS_PLOTLY:
+        fig_lift = px.bar(
+            disp_table,
+            x="Absolute Lift (pp)",
+            y=col_name,
+            orientation="h",
+            text="Absolute Lift (pp)",
+            color="Absolute Lift (pp)",
+            color_continuous_scale="Viridis",
+            labels={"Absolute Lift (pp)": "Retention Lift (percentage points)", col_name: dim}
+        )
+        fig_lift.update_traces(
+            texttemplate="+%{text:.2f} pp",
+            textposition="outside"
+        )
+        fig_lift.update_layout(
+            paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(0,0,0,0)",
+            margin=dict(l=10, r=10, t=10, b=10),
+            height=280,
+            coloraxis_showscale=False,
+            xaxis=dict(showgrid=True, gridcolor="rgba(255,255,255,0.06)", color="#94a3b8"),
+            yaxis=dict(color="#94a3b8")
+        )
+        st.plotly_chart(fig_lift, use_container_width=True)
 
     st.markdown("---")
     st.image(
@@ -627,7 +648,7 @@ elif page == "5. CUPED Variance Reduction":
     st.markdown("---")
     st.subheader("Visual Variance Shrinkage & Precision Gains")
 
-    # High-Res Static Figure 15 (Fixed X-axis padding and no CI text collision)
+    # High-Res Static Figure 15
     st.image(
         os.path.join(FIGURES_DIR, "15_cuped_variance_reduction_comparison.png"),
         caption="CUPED Analytics: Outcome Distribution Variance Shrinkage (Left) and 95% Confidence Interval Tightening (Right)",
@@ -640,7 +661,7 @@ elif page == "5. CUPED Variance Reduction":
 
     c_calc1, c_calc2 = st.columns([2, 3])
     with c_calc1:
-        corr = st.slider("Observed Pre-Post Correlation (ρ):", min_value=0.0, max_value=0.85, value=0.363, step=0.01)
+        corr = st.slider("Observed Pre-Post Correlation (rho):", min_value=0.0, max_value=0.85, value=0.363, step=0.01)
         var_red = (corr ** 2) * 100
         sample_needed_pct = 100 - var_red
         days_saved_60 = round(60 * (var_red / 100), 1)
@@ -651,9 +672,9 @@ elif page == "5. CUPED Variance Reduction":
             <div style="font-size: 13px; color: #94a3b8; font-weight: 600;">ALGORITHMIC EFFICIENCY GAIN</div>
             <div style="font-size: 24px; font-weight: 800; color: #34d399; margin: 4px 0;">{var_red:.1f}% Variance Reduction</div>
             <div style="font-size: 13px; color: #cbd5e1; line-height: 1.5;">
-                • Standard Required Sample Size: <strong>100%</strong> (N = 18,000)<br>
-                • Effective Sample Size Required under CUPED: <strong>{sample_needed_pct:.1f}%</strong> (N = {int(18000 * sample_needed_pct/100):,})<br>
-                • Timeline Acceleration on 60-Day Trial: <strong>~{days_saved_60} Days Saved</strong>
+                * Standard Required Sample Size: <strong>100%</strong> (N = 18,000)<br>
+                * Effective Sample Size Required under CUPED: <strong>{sample_needed_pct:.1f}%</strong> (N = {int(18000 * sample_needed_pct/100):,})<br>
+                * Timeline Acceleration on 60-Day Trial: <strong>~{days_saved_60} Days Saved</strong>
             </div>
         </div>
         """, unsafe_allow_html=True)
