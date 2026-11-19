@@ -14,7 +14,7 @@
 
 ---
 
-## 📌 Synthetic Data Disclosure & Ethical Notice
+##  Synthetic Data Disclosure & Ethical Notice
 
 > [!IMPORTANT]
 > **SIMULATION DISCLOSURE:**  
@@ -22,7 +22,7 @@
 
 ---
 
-## 🏢 Business Context & Problem Statement
+##  Business Context & Problem Statement
 
 *Aura Luxe Salon & Spa Chain* operates **22 retail outlets** strategically distributed across Coimbatore, Tamil Nadu. The network encompasses flagship luxury salons in high-income neighborhoods (*Race Course, RS Puram*), high-throughput salons in student and IT corridors (*Peelamedu, Saravanampatti*), and family-oriented salons in residential suburbs (*Vadavalli, Saibaba Colony*).
 
@@ -36,7 +36,7 @@ To address these challenges, the chain executed two strategic initiatives:
 
 ---
 
-## 🛠️ Technology Stack
+##  Technology Stack
 
 - **Core Analytics & Engineering:** Python 3.10+, Pandas, NumPy
 - **Statistical Inference & Econometrics:** Statsmodels, SciPy, Scikit-learn
@@ -47,7 +47,7 @@ To address these challenges, the chain executed two strategic initiatives:
 
 ---
 
-## 📂 Project Architecture
+##  Project Architecture
 
 ```
 Salon-Experiment-Causal-Analysis/
@@ -133,7 +133,7 @@ Salon-Experiment-Causal-Analysis/
 
 ---
 
-## 🔬 Core Methodologies & Statistical Frameworks
+##  Core Methodologies & Statistical Frameworks
 
 ### 1. Randomized A/B Experimentation
 - **Intervention:** Automated WhatsApp Bot providing 48h/24h 1-click confirmation and slot-swap rescheduling.
@@ -154,7 +154,7 @@ Salon-Experiment-Causal-Analysis/
 
 ---
 
-## 📈 Key Empirical Findings Summary
+##  Key Empirical Findings Summary
 
 | Metric Dimension | Control Group | Treatment Group | Estimated Treatment Effect | Relative Lift (%) | 95% Confidence Interval | $p$-value | Statistical & Business Conclusion |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -166,7 +166,7 @@ Salon-Experiment-Causal-Analysis/
 
 ---
 
-## 🖼️ Visualizations & Screenshots Preview
+##  Visualizations & Screenshots Preview
 
 The analytical pipeline generates 15 publication-grade figures (300 DPI) in `outputs/figures/`:
 
@@ -183,7 +183,7 @@ The analytical pipeline generates 15 publication-grade figures (300 DPI) in `out
 
 ---
 
-## 💻 Installation & Step-by-Step Execution Guide
+##  Installation & Step-by-Step Execution Guide
 
 ### 1. Environment Setup
 Clone the repository and install the verified dependencies:
@@ -241,7 +241,7 @@ jupyter notebook notebooks/05_cuped_analysis.ipynb
 
 ---
 
-## 🚀 Interactive Streamlit Dashboard (`app.py`)
+##  Interactive Streamlit Dashboard (`app.py`)
 
 The project includes an optional interactive analytical web application with 5 dynamic pages:
 - **Page 1: Business Overview:** High-level KPI cards, revenue in ₹ Crores, regional filters, and monthly revenue trends.
@@ -252,33 +252,9 @@ The project includes an optional interactive analytical web application with 5 d
 
 ---
 
-## ⚠️ Limitations & Future Improvements
+##  Limitations & Future Improvements
 
 1. **Synthetic Nature:** All records are simulated via parametric distributions (Gamma, Pareto, Negative Binomial) calibrated to Coimbatore demographics. Real-world consumer behaviors may feature unforeseen micro-shocks.
 2. **Anonymous Walk-In Barrier:** Walk-ins without registered mobile numbers cannot receive digital WhatsApp messages. In-salon front-counter conversion protocols are required to onboard these guests.
 3. **Small Regional Cluster Count:** Regional DiD clustered standard errors are based on $G = 5$ administrative regions. While robust, asymptotic cluster assumptions should be monitored alongside outlet-level microdata.
 4. **Future Extensions:** Implement synthetic control methods (SCM) for regional policy evaluation and deploy multi-armed bandit (MAB) algorithms to dynamically optimize message delivery timing.
-
----
-
-## 📤 GitHub Push Instructions
-
-To push this submission package to your personal GitHub repository:
-
-```bash
-# 1. Initialize Git repository
-git init
-
-# 2. Add files (honoring .gitignore)
-git add .
-
-# 3. Commit deliverables
-git commit -m "feat: complete Phase 1, 2, and 3 submission package for Salon Experiment & Causal Analysis"
-
-# 4. Link to GitHub remote
-git remote add origin https://github.com/<your-username>/Salon-Experiment-Causal-Analysis.git
-
-# 5. Push to main branch
-git branch -M main
-git push -u origin main
-```
