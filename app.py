@@ -135,16 +135,6 @@ st.markdown("""
         box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
     }
 
-    /* Single Line Math Containers */
-    .formula-card {
-        background: rgba(15, 23, 42, 0.6);
-        border: 1px solid rgba(59, 130, 246, 0.25);
-        border-radius: 8px;
-        padding: 14px 20px;
-        margin: 14px 0;
-        text-align: center;
-    }
-
     /* Streamlit Metric Overrides */
     [data-testid="stMetricValue"] {
         font-weight: 700 !important;
@@ -478,10 +468,8 @@ elif page == "3. Historical Causal Analysis (DiD)":
     """)
 
     # Single-line Econometric Formula
-    st.markdown('<div class="formula-card">', unsafe_allow_html=True)
     st.latex(r"Y_{rt} = \beta_0 + \beta_1(\text{Treatment}_r) + \beta_2(\text{Post}_t) + \beta_3(\text{Treatment}_r \times \text{Post}_t) + \epsilon_{rt}")
     st.caption("Econometric Specification: Beta-3 represents the Average Treatment Effect on the Treated (ATT) with Cluster-Robust SE.")
-    st.markdown('</div>', unsafe_allow_html=True)
 
     if "did_summary" in data:
         st.subheader("Econometric Estimation Summary")
@@ -495,20 +483,23 @@ elif page == "3. Historical Causal Analysis (DiD)":
     st.subheader("Parallel Trends & Dynamic Event Study")
 
     df_hist = data["historical"].copy()
-    df_hist["group"] = np.where(df_hist["treatment_region"] == 1, "Policy Regions (Central, North)", "Comparison Regions (South, East, West)")
-    monthly_trends = df_hist.groupby(["year_month", "group"])["revenue_per_visit"].mean().reset_index()
+    treat_col = "treatment_region_indicator" if "treatment_region_indicator" in df_hist.columns else "treatment_region"
+    month_col = "month" if "month" in df_hist.columns else "year_month"
+    is_treated = (df_hist[treat_col] == 1) if treat_col in df_hist.columns else df_hist["region"].isin(["Central", "North"])
+    df_hist["group"] = np.where(is_treated, "Policy Regions (Central, North)", "Comparison Regions (South, East, West)")
+    monthly_trends = df_hist.groupby([month_col, "group"])["revenue_per_visit"].mean().reset_index()
 
     if HAS_PLOTLY:
-        all_hist_months = sorted(monthly_trends["year_month"].unique())
+        all_hist_months = sorted(monthly_trends[month_col].unique())
         tick_vals_did = [m for m in all_hist_months if m.endswith(("-01", "-07"))]
         tick_text_did = [f"{'Jan' if m.endswith('-01') else 'Jul'} '{m[:4][2:]}" for m in tick_vals_did]
 
         fig_did = px.line(
             monthly_trends,
-            x="year_month",
+            x=month_col,
             y="revenue_per_visit",
             color="group",
-            labels={"year_month": "Month", "revenue_per_visit": "Revenue / Visit (Rs.)", "group": "Regional Cohort"},
+            labels={month_col: "Month", "revenue_per_visit": "Revenue / Visit (Rs.)", "group": "Regional Cohort"},
             color_discrete_map={"Policy Regions (Central, North)": "#3b82f6", "Comparison Regions (South, East, West)": "#94a3b8"}
         )
         fig_did.add_vline(x="2023-01", line_width=2, line_dash="dash", line_color="#ef4444",
@@ -537,6 +528,13 @@ elif page == "3. Historical Causal Analysis (DiD)":
             )
         )
         st.plotly_chart(fig_did, use_container_width=True)
+    else:
+        # Fallback to high-resolution static inspection plot
+        st.image(
+            os.path.join(FIGURES_DIR, "12_did_parallel_trends_inspection.png"),
+            caption="Parallel Trends: 48-Month Regional Trajectories (Policy vs. Comparison Regions)",
+            use_container_width=True
+        )
 
     # Dynamic Event Study Leads & Lags
     st.image(
@@ -631,11 +629,9 @@ elif page == "5. CUPED Variance Reduction":
     st.markdown('<div class="hero-subtitle">Algorithmic Variance Reduction & Experiment Runtime Acceleration</div>', unsafe_allow_html=True)
 
     # Single-line Math Formulas
-    st.markdown('<div class="formula-card">', unsafe_allow_html=True)
     st.latex(r"Y_{i, \text{adj}} = Y_i - \theta (X_i - \bar{X}) \quad \text{where} \quad \theta = \frac{\text{Cov}(Y, X)}{\text{Var}(X)}")
     st.latex(r"\text{Variance Reduction} = \rho_{XY}^2 \quad \implies \quad \text{Equivalent Sample Size / Duration Savings} = \rho_{XY}^2")
     st.caption("CUPED Covariance Adjustment: Removes pre-experiment baseline customer variance without introducing point-estimate bias.")
-    st.markdown('</div>', unsafe_allow_html=True)
 
     if "cuped_summary" in data:
         st.subheader("CUPED Statistical Comparison")
